@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CalendarApp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalendarApp.Data
 {
-	public class ApplicationDbContext : IdentityDbContext
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 	{
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{
 		}
+
+		public DbSet<Event> Events { get; set; }
+        public DbSet<Location> Locations { get; set; }
+
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -23,6 +28,8 @@ namespace CalendarApp.Data
 					entityType.SetTableName(tableName.Substring(6));
 				}
 			}
+
+
 		}
 	}
 }
