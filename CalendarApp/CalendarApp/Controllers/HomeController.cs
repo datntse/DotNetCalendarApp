@@ -1,4 +1,5 @@
-﻿using CalendarApp.Models;
+﻿using CalendarApp.Data;
+using CalendarApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,15 +7,18 @@ namespace CalendarApp.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly ILogger<HomeController> _logger;
+        private readonly IDAL _idal;
+        private readonly ILogger<HomeController> _logger;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IDAL idal)
 		{
+			_idal = idal;
 			_logger = logger;
 		}
 
 		public IActionResult Index()
 		{
+			var result = _idal.GetEvent(1);
 			return View();
 		}
 
