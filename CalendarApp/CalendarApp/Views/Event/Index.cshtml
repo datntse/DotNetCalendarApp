@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CalendarApp.Models.Event>
+﻿@model IEnumerable<CalendarApp.Models.ViewModels.EventViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -18,16 +18,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Event.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Event.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartTime)
+                @Html.DisplayNameFor(model => model.Event.StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndTime)
+                @Html.DisplayNameFor(model => model.Event.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LocationName)
             </th>
             <th></th>
         </tr>
@@ -36,21 +39,25 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.Event.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                    @Html.DisplayFor(modelItem => item.Event.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
+                @Html.DisplayFor(modelItem => item.Event.StartTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
+                    @Html.DisplayFor(modelItem => item.Event.EndTime)
             </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.LocationName)
+                </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Event.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Event.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Event.Id">Delete</a>
             </td>
         </tr>
 }

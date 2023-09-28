@@ -1,4 +1,4 @@
-﻿@model CalendarApp.Models.Event
+﻿@model CalendarApp.Models.ViewModels.EventViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,26 +13,30 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Event.Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Event.Name" class="control-label"></label>
+                <input asp-for="Event.Name" class="form-control" />
+                <span asp-validation-for="Event.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Event.Description" class="control-label"></label>
+                <input asp-for="Event.Description" class="form-control" />
+                <span asp-validation-for="Event.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
+                <label asp-for="Event.StartTime" class="control-label"></label>
+                <input asp-for="Event.StartTime" class="form-control" />
+                <span asp-validation-for="Event.StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
+                <label asp-for="Event.EndTime" class="control-label"></label>
+                <input asp-for="Event.EndTime" class="form-control" />
+                <span asp-validation-for="Event.EndTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                @Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -40,6 +44,24 @@
         </form>
     </div>
 </div>
+
+<script>
+    function SelectedLocation(_location) {
+        var _locations = document.getElementById('Location'), loc, i;
+
+        for(var i = 0; i < _locations.length; i++) {
+            loc = _locations[i];
+            if (loc.innerText === _location) {
+                loc.selected = "true";
+            }
+        }
+    }
+
+    var eventLocation = "@Html.Raw(Model.LocationName)";
+    document.addEventListener('DOMContentLoaded', function () {
+        SelectedLocation(eventLocation);
+    });
+</script>
 
 <div>
     <a asp-action="Index">Back to List</a>

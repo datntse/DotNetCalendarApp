@@ -15,6 +15,9 @@ namespace CalendarApp.Data
         public List<Location> GetLocations();
         public Location GetLocation(int id);
         public Task<Status> CreateLocation(Location location);
+        public Task<Status> EditLocation(Location location);
+
+        public string getLocationNameById(int id);
     }
     public class DAL : IDAL
     {
@@ -41,13 +44,19 @@ namespace CalendarApp.Data
         public async Task<Status> CreateEvent(IFormCollection form)
         {
             var status = new Status();
+            var locationName = form["Location"].ToString();
+
             try
             {
-                var _event = new Event(form, _context.Locations.FirstOrDefault(x => x.Name.Equals(form["Location"])));
-                _context.Events.Add(_event);
-                await _context.SaveChangesAsync();
-                status.Code = 1;
-                status.Message = "Create new Event Successfully";
+                var locationEvent = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
+                if (locationEvent != null)
+                {
+                    var _event = new Event(form, locationEvent);
+                    _context.Events.Add(_event);
+                    await _context.SaveChangesAsync();
+                    status.Code = 1;
+                    status.Message = "Create new Event Successfully";
+                } 
             }
             catch (Exception)
             {
@@ -80,11 +89,12 @@ namespace CalendarApp.Data
         public async Task<Status> UpdateEvent(IFormCollection form)
         {
             var status = new Status();
-
+            var locationName = form["Location"].ToString();
+            var eventId = int.Parse(form["Event.Id"]);
             try
             {
-                var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == int.Parse(form["Id"]));
-                var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(form["Location"]));
+                var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
+                var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
                 eventSelectd.UpdateEvent(form, location);
 
                 _context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -128,6 +138,16 @@ namespace CalendarApp.Data
                 status.Message = "Add Location Failed";
             }
             return status;
+        }
+
+        public string getLocationNameById(int id)
+        {
+            return _context.Locations.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+        }
+
+        public Task<Status> EditLocation(Location location)
+        {
+            return null; 
         }
     }
 }

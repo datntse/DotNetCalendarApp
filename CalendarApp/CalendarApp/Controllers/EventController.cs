@@ -23,8 +23,17 @@ namespace CalendarApp.Controllers
         // GET: Event
         public IActionResult Index()
         {
-           
-            return View(_dal.GetEvents());
+            List<EventViewModel> listEventVM = new List<EventViewModel>();
+            var _events = _dal.GetEvents();
+            foreach ( var _event  in _events)
+            {
+                listEventVM.Add(new EventViewModel
+                {
+                    Event = _event,
+                    LocationName = _dal.getLocationNameById(_event.LocationId)
+                }); ;
+            }
+            return View(listEventVM);
         }
 
         // GET: Event/Details/5
@@ -61,7 +70,7 @@ namespace CalendarApp.Controllers
             if (result.Code == 1)
             {
                 ViewData["Message"] = result.Message;
-                return RedirectToAction(nameof(Index)); ;
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -79,11 +88,25 @@ namespace CalendarApp.Controllers
             }
 
             var @event = _dal.GetEvent((int)id);
-            if (@event == null)
+
+            //get Location with selected event 
+            var locationEvent = _dal.GetLocation(@event.LocationId);
+            if (locationEvent != null)
+            {
+                //var eventVM = new EventViewModel
+                //{
+                //    Event = @event,
+                //    LocationName = locationEvent.Name,
+                //};
+                var eventVM = new EventViewModel(@event, _dal.GetLocations());
+                return View(eventVM);
+            }
+            else
             {
                 return NotFound();
+
             }
-            return View(@event);
+
         }
 
         // POST: Event/Edit/5
@@ -116,30 +139,28 @@ namespace CalendarApp.Controllers
         // GET: Event/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null )
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var @event = await _dal.DeleteEvent((int)id);
-            if (@event == null)
+            var _event = _dal.GetEvent((int)id);
+            if (_event == null)
             {
                 return NotFound();
             }
-
-            return View(@event);
+            return View(_event);
         }
-
-        // POST: Event/Delete/5
-        [HttpPost, ActionName("Delete")]
+        
+		// POST: Event/Delete/5
+		[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-          
+
             var @event = await _dal.DeleteEvent(id);
             TempData["Message"] = @event.Message;
             return RedirectToAction(nameof(Index));
         }
-    
+
     }
 }

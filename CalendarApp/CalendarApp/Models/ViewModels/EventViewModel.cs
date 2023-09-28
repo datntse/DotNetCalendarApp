@@ -12,7 +12,7 @@ namespace CalendarApp.Models.ViewModels
 
         public EventViewModel()
         {
-       
+            
         }
 
         public EventViewModel(Event _event, List<Location> locations)

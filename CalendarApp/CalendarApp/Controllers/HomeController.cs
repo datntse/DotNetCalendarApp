@@ -1,4 +1,5 @@
 ﻿using CalendarApp.Data;
+using CalendarApp.Helpers;
 using CalendarApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -18,8 +19,11 @@ namespace CalendarApp.Controllers
 
 		public IActionResult Index()
 		{
-			var result = _idal.GetEvent(1);
-			return View();
+			//var result = JSONListHelper.GetEventListJSONString(_idal.GetEvents());
+			ViewData["EventList"] = JSONListHelper.GetEventListJSONString(_idal.GetEvents());
+			ViewData["ResourceList"] = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
+			//return Ok(result);
+            return View();
 		}
 
 		public IActionResult Privacy()
