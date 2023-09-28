@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\CalendarApp.bundle.scp.css"
     },
     {
+      "Id": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\css\\Pulse.css",
+      "PackagePath": "staticwebassets\\css\\Pulse.css"
+    },
+    {
       "Id": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\css\\minty.css",
       "PackagePath": "staticwebassets\\css\\minty.css"
     },

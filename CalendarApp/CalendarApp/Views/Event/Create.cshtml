@@ -6,7 +6,11 @@
 }
 
 <h1>Create</h1>
-
+@if (ViewData["Message"] != null)
+{
+    <h3>@ViewData["Message"]</h3>
+}
+<p>
 <h4>Event</h4>
 <hr />
 <div class="row">

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "4jWmzecZb8rh5wyicetkxXFYYsJ03w2BhFgTOKP1GY8=",
+  "Hash": "GXPtHQL2tbpZHAvhjwlnfDWJy4LQLBlM6wkvoI7RpkY=",
   "Source": "CalendarApp",
   "BasePath": "_content/CalendarApp",
   "Mode": "Default",
@@ -1086,6 +1086,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\minty.css"
+    },
+    {
+      "Identity": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\css\\Pulse.css",
+      "SourceId": "CalendarApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\",
+      "BasePath": "_content/CalendarApp",
+      "RelativePath": "css/Pulse.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Pulse.css"
     },
     {
       "Identity": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\css\\site.css",

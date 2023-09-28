@@ -23,10 +23,7 @@ namespace CalendarApp.Controllers
         // GET: Event
         public IActionResult Index()
         {
-            if (TempData["Message"] != null)
-            {
-                ViewData["Message"] = TempData["Message"];
-            }
+           
             return View(_dal.GetEvents());
         }
 
@@ -63,12 +60,12 @@ namespace CalendarApp.Controllers
             var result = await _dal.CreateEvent(form);
             if (result.Code == 1)
             {
-                TempData["Message"] = result.Message;
+                ViewData["Message"] = result.Message;
                 return RedirectToAction(nameof(Index)); ;
             }
             else
             {
-                TempData["Message"] = result.Message;
+                ViewData["Message"] = result.Message;
                 return View(model);
             }
         }
