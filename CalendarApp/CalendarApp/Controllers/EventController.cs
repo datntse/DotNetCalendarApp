@@ -89,18 +89,19 @@ namespace CalendarApp.Controllers
 
 		// Ajax call controller
 		[HttpPost]
-		public async Task<JsonResult> EditEvent(IFormCollection form, string type = "update")
+		public async Task<JsonResult> EditEvent(IFormCollection form)
 		{
+			var eventId = int.Parse(form["id"].ToString());
 			var status = new Status();
-			if( type.Equals("update"))
+			
+			if(eventId != 0)
 			{
-			var result = await _dal.UpdateEvent(form);
-				status.Code = result.Code;
-			} else if(type.Equals("create")) {
-				var result = await _dal.CreateEvent(form);
+				status = await _dal.UpdateEvent(form);
+			} else
+			{
+				status = await _dal.CreateEvent(form);
 			}
-
-			return new JsonResult(status);
+			return new JsonResult(status.Code);
 		}
 
 		[HttpPost]

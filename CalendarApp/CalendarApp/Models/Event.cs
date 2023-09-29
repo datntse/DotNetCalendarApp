@@ -43,16 +43,20 @@ namespace CalendarApp.Models
 		//}
 		public Event(IFormCollection form, Location location)
 		{
-			UserId = form["Event.UserId"].ToString();
+			UserId = form["UserId"].ToString();
 			Name = form["Name"].ToString();
 			Description = form["Description"].ToString();
 			StartTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
-			EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			
 			if (form["isFullDay"].ToString().Length > 0)
 			{
 				isFullDay = true;
+				EndTime = StartTime;
 			}
-			else { isFullDay = false; };
+			else { 
+				isFullDay = false;
+				EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			};
 			Location = location;
 		}
 
@@ -72,12 +76,18 @@ namespace CalendarApp.Models
             Description = form["Description"].ToString();
             StartTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
 			EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
-            if(form["isFullDay"].ToString().Length > 0)
-            {
-                isFullDay = true;
-            } else { isFullDay = false; };
-            //LocationId = location.Id;
-            Location = location;
+			if (form["isFullDay"].ToString().Length > 0)
+			{
+				isFullDay = true;
+				EndTime = StartTime;
+			}
+			else
+			{
+				isFullDay = false;
+				EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			};
+			//LocationId = location.Id;
+			Location = location;
         }
 
 
