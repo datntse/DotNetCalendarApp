@@ -30,7 +30,14 @@ namespace CalendarApp.Data
 
         public List<Event> GetEvents()
         {
-            return _context.Events.ToList();
+            var result = _context.Events.ToList();
+			if(result.Count > 0)
+            {
+                return result;
+            } else
+            {
+                return new List<Event> { };
+            }
         }
         public List<Event> GetMyEvents(string userId)
         {
@@ -86,33 +93,56 @@ namespace CalendarApp.Data
             return status;
 
         }
-        public async Task<Status> UpdateEvent(IFormCollection form)
-        {
-            var status = new Status();
-            var locationName = form["Location"].ToString();
-            var eventId = int.Parse(form["Event.Id"]);
-            try
-            {
-                var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
-                var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
-                eventSelectd.UpdateEvent(form, location);
+        //public async Task<Status> UpdateEvent(IFormCollection form)
+        //{
+        //    var status = new Status();
+        //    var locationName = form["Location"].ToString();
+        //    var eventId = int.Parse(form["Event.Id"]);
+        //    try
+        //    {
+        //        var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
+        //        var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
+        //        eventSelectd.UpdateEvent(form, location);
 
-                _context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                await _context.SaveChangesAsync();
-                status.Code = 1;
-                status.Message = "Update Event Successfully";
+        //        _context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        //        await _context.SaveChangesAsync();
+        //        status.Code = 1;
+        //        status.Message = "Update Event Successfully";
+        //    }
+        //    catch (Exception)
+        //    {
+        //        status.Code = 0;
+        //        status.Message = "Invalid data in form or parse error";
+        //    }
+        //    return status;
+        //}
+        // 000000000000 test for ajax 
+		public async Task<Status> UpdateEvent(IFormCollection form)
+		{
+			var status = new Status();
+			var locationName = form["Location"].ToString();
+			var eventId = int.Parse(form["Id"]);
+			try
+			{
+				var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
+				var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
+				eventSelectd.UpdateEvent(form, location);
 
-            }
-            catch (Exception)
-            {
-                status.Code = 0;
-                status.Message = "Invalid data in form or parse error";
-            }
-            return status;
-        }
+				_context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+				await _context.SaveChangesAsync();
+				status.Code = 1;
+				status.Message = "Update Event Successfully";
+			}
+			catch (Exception)
+			{
+				status.Code = 0;
+				status.Message = "Invalid data in form or parse error";
+			}
+			return status;
+		}
 
 
-        public List<Location> GetLocations()
+		public List<Location> GetLocations()
         {
             return _context.Locations.ToList();
         }

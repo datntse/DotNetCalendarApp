@@ -23,7 +23,6 @@ namespace CalendarApp.Models.ViewModels
             {
                 Locations.Add(new SelectListItem { Text = location.Name, });
             }
-
         }
 
         public EventViewModel(List<Location> locations)

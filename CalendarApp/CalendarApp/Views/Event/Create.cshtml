@@ -1,64 +1,111 @@
-﻿@model CalendarApp.Models.ViewModels.EventViewModel
+﻿@using CalendarApp.Data;
+@using Microsoft.AspNetCore.Identity;
+@model CalendarApp.Models.ViewModels.EventViewModel
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+
 }
+@inject UserManager<ApplicationUser> UserManager
 
 <h1>Create</h1>
 @if (ViewData["Message"] != null)
 {
-    <h3>@ViewData["Message"]</h3>
+	<h3>@ViewData["Message"]</h3>
 }
 <p>
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Event.Name" class="control-label"></label>
-                <input asp-for="Event.Name" class="form-control" />
-                <span asp-validation-for="Event.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Event.Description" class="control-label"></label>
-                <input asp-for="Event.Description" class="form-control" />
-                <span asp-validation-for="Event.Description" class="text-danger"></span>
-            </div>
 
-            <div class="form-group">
-                <label>FullDay</label>
-                    @Html.CheckBoxFor(x => x.Event.isFullDay)
-            </div>
 
-            <div class="form-group">
-                <label asp-for="Event.StartTime" class="control-label"></label>
-                <input asp-for="Event.StartTime" class="form-control" />
-                <span asp-validation-for="Event.StartTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Event.EndTime" class="control-label"></label>
-                <input asp-for="Event.EndTime" class="form-control" />
-                <span asp-validation-for="Event.EndTime" class="text-danger"></span>
-            </div>
+	<h4>Event</h4>
+	<hr />
 
-            <div class="form-group">
-                <label>Location</label>
-                    @Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+	<div class="row">
+		<div class="col-md-4">
+			<h1></h1>
+			<form asp-action="Create">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+				@{
+					var user = await UserManager.GetUserAsync(User);
+					if (user != null)
+					{
+						var userLoginId = await UserManager.GetUserIdAsync(user);
+						// Use the userLoginId as needed in your view
+						<input type="hidden" asp-for="Event.UserId" class="form-control" value="@userLoginId" />
+					}
+					else
+					{
+						<p>User is not logged in.</p>
+					}
+				}
+				<div class="form-group">
+					<label asp-for="Event.Name" class="control-label"></label>
+					<input asp-for="Event.Name" class="form-control" />
+					<span asp-validation-for="Event.Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Event.Description" class="control-label"></label>
+					<input asp-for="Event.Description" class="form-control" />
+					<span asp-validation-for="Event.Description" class="text-danger"></span>
+				</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+				<div class="form-group">
+					<label>FullDay</label>
+					@Html.CheckBoxFor(x => x.Event.isFullDay, new {id = "Event_isFullDay"});
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Event.StartTime" class="control-label"></label>
+					<input asp-for="Event.StartTime" class="form-control" />
+					<span asp-validation-for="Event.StartTime" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Event.EndTime" class="control-label"></label>
+					<input asp-for="Event.EndTime" class="form-control" />
+					<span asp-validation-for="Event.EndTime" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label>Location</label>
+					@Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<a asp-action="Index">Back to List</a>
+	</div>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script>
+		var isFullDayCheckbox = $('#Event_isFullDay');
+		console.log(isFullDayCheckbox);
+		var startDay = $('#Event_StartTime');
+		var endDay = $('#Event_EndTime');
+			isFullDayCheckbox.click(function () {	
+			if (isFullDayCheckbox.checked) {
+				// Set the date value to today at 12 AM
+				//var today = new Date();
+				//today.setHours(0, 0, 0, 0);
+				//var formattedDate = formatDate(today);
+				console.log(startDay);
+				startDay.value = "2023-09-29";
+				startDay.readOnly = true;
+				endDay.readOnly = true;
+			} else {
+				// Clear the date input
+				startDay.value = "";
+				endDay.value = "";
+			}
+		});
+	</script>
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}

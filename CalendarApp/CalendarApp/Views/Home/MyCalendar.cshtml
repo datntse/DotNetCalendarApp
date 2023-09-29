@@ -1,0 +1,280 @@
+﻿
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/6.7.13/css/tempus-dominus.min.css" integrity="sha512-wO+rVZhTyJgwKxVY279cD/TZTlW2m0IJQXzoOHfj2w//md58T3jc8ZWHb+HEm8CspcCNnaJVFPyRAGd/Y4ScfA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/6.7.13/js/tempus-dominus.js" integrity="sha512-xiyTM4u7V7zMP+2GA98z4IymIB00lNB7/Mpc6pYAauEM3A1kw4c2da3bu9AAO5E/7ncW+f1dsDO436kzFHP6dw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<div id="myModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<span id="eventTitle"></span>
+				</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<button id="btnDelete" class="btn btn-danger btn-sm col-md-2 pull-right">
+					Delete
+				</button>
+				<button id="btnEdit" class="btn btn-warning btn-sm col-md-2 pull-right" style="margin-left: 5px">
+					Edit
+				</button>
+				<p id="pDetails"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="myModalSave" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Save Event</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="editForm">
+					<input type="hidden" name="Id" id="hdEventID" value="0" />
+					<div class="form-group">
+						<label>Name</label>
+						<input type="text" id="txtSubject" name="Name" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label>Start</label>
+						<div class="input-group date" id="dtp1">
+							<input type="text" id="txtStart" name="StartTime" class="form-control" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="checkbox">
+							<label><input type="checkbox" id="chkIsFullDay" name="isFullDay" checked="checked" /> Is Full Day event</label>
+						</div>
+					</div>
+					<div class="form-group" id="divEndDate" style="display:none">
+						<label>End</label>
+						<div class="input-group date" id="dtp2">
+							<input type="text" id="txtEnd" name="EndTime" class="form-control" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Description</label>
+						<textarea id="txtDescription" name="Description" rows="3" class="form-control"></textarea>
+					</div>
+					<div class="form-group">
+						<label>Location</label>
+						@Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
+						@*<select id="Location" class="form-control">
+						<option value="">Default</option>
+						<option value="red">Red</option>
+						<option value="blue">Blue</option>
+						<option value="black">Black</option>
+						<option value="green">Green</option>
+						</select>*@
+					</div>
+					<button type="button" id="btnSave" class="btn btn-success">Save</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+
+		var selectedEvent = null;
+		var eventLocation = null;
+	
+
+		var calendarEl = document.getElementById('calendar');
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			contentHeight: 700,
+			initialView: 'dayGridMonth',
+			events: @Html.Raw(ViewData["EventList"]),
+			resources: @Html.Raw(ViewData["ResourceList"]),
+			headerToolbar: {
+				left: 'today prev,next',
+				center: 'title',
+				right: 'timeGridWeek,dayGridMonth,listMonth,resourceTimeGridDay'
+			},
+			eventClick: function (calEvent) {
+				selectedEvent = calEvent.event;
+				eventLocation = calEvent.event.extendedProps.locationName;
+				$('#myModal #eventTitle').text(calEvent.event.title);
+				var $description = $('<div/>');
+				$description.append($('<p/>').html('<b>Start:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm:ss')));
+
+				if (calEvent.event.end != null) {
+					$description.append($('<p/>').html('<b>End:</b>' + moment(calEvent.event.end).format('DD-MM-YYYY HH:mm:ss')));
+				}
+
+				$description.append($('<p/>').html('<b>Description:</b>' + calEvent.event.extendedProps.description));
+				$description.append($('<p/>').html('<b>Location:</b>' + calEvent.event.extendedProps.locationName));
+				$description.append($('<p/>').html('<b>Id Event:</b>' + calEvent.event.id));
+				$('#myModal #pDetails').empty().html($description);
+				$('#myModal').modal('show');
+			}
+		});
+		calendar.render();
+
+		// handle logic
+		$('#btnDelete').click(function () {
+			if (selectedEvent != null && confirm('Are you sure')) {
+				$.ajax({
+					type: 'POST',
+					url: '/Event/DeleteEvent',
+					data: {
+						eventId: selectedEvent.id,
+					},
+					success: function (data) {
+						if (data) {
+							$('#myModal').modal('hide');
+							$.ajax({
+								type: 'GET',
+								url: '/Home/MyCalendar',
+								success: function (data) {
+									location.reload();
+								}
+							});
+						}
+					},
+					error: function () {
+						alert('Failed');
+					}
+				});
+			};
+		});
+
+		$('#btnEdit').click(function () {
+			$('#myModalSave').modal('show');
+			SelectedLocation(eventLocation);
+			openAddEditForm();
+		});
+
+
+		function SelectedLocation(_location) {
+			var _locations = document.getElementById('Location'), loc, i;
+
+			for (var i = 0; i < _locations.length; i++) {
+				loc = _locations[i];
+				if (loc.innerText === _location) {
+					loc.selected = "true";
+				}
+			}
+		}
+
+		$('#chkIsFullDay').change(function () {
+			if ($(this).is(':checked')) {
+				$('#divEndDate').hide();
+			}
+			else {
+				$('#divEndDate').show();
+			}
+		});
+
+
+		function openAddEditForm() {
+			if (selectedEvent != null) {
+				$('#hdEventID').val(selectedEvent.id);
+				$('#txtSubject').val(selectedEvent.title);
+				$('#txtStart').val(moment(selectedEvent.start).format('DD/MM/YYYY HH:mm A'));
+				$('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+				$('#chkIsFullDay').change();
+				$('#txtEnd').val(selectedEvent.end != null ? moment(selectedEvent.end).format('DD/MM/YYYY HH:mm A') : '');
+				$('#txtDescription').val(selectedEvent.extendedProps.description);
+			}
+			$('#myModal').modal('hide');
+			$('#myModalSave').modal();
+		}
+
+		$('#btnSave').click(function () {
+			var isValid = true;
+			//Validation/
+			if ($('#txtSubject').val().trim() == "") {
+				alert('Subject required');
+				isValid = false;
+				return;
+			}
+			if ($('#txtStart').val().trim() == "") {
+				alert('Start date required');
+				isValid = false;
+				return;
+			}
+			if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
+				alert('End date required');
+				isValid = false;
+				return;
+			}
+			else {
+				var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+				var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+				if (startDate > endDate) {
+					alert('Invalid end date');
+					isValid = false;
+					return;
+				}
+			}
+			if (isValid) {
+				var _form = document.getElementById('editForm');
+				var formdata = new FormData(_form);
+				var newDateTime = new Date();
+				for (const [key, value] of formdata) {
+					console.log(`${key}: ${value}\n`);
+				}
+				SaveEvent(formdata);
+			}
+
+			// call function for submit data to the server
+		})
+
+		function SaveEvent(formdata) {
+			$.ajax({
+				url: "/Event/EditEvent",
+				type: "POST",
+				data: formdata,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					location.reload();
+					alert("Success");
+				},
+				error: function (error) {
+					// Handle any errors
+				}
+			});
+		}
+
+	});
+</script>
+
+
+<div class="text-center">
+	<h1 class="display-4">Welcome to my Calender</h1>
+	@if (ViewData["UserId"] != null)
+	{
+		<h1 class="display-4">userId: @ViewData["UserId"]</h1>
+
+	}
+	<h1 class="display-4"></h1>
+
+	<div id="calendar"></div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		<a asp-controller="Event" asp-action="Index">Events</a>
+	</div>
+	<div class="col-md-6">
+		<a asp-controller="Location" asp-action="Index">Locations</a>
+	</div>
+</div>

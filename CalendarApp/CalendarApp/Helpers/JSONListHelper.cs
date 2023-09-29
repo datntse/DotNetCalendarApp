@@ -9,6 +9,7 @@ namespace CalendarApp.Helpers
             var eventList = new List<CalendarEventModel>();
             foreach (var _event in events)
             {
+                var _locationName = _event.Location.Name;
                 eventList.Add(new CalendarEventModel
                 {
                     id = _event.Id,
@@ -18,7 +19,9 @@ namespace CalendarApp.Helpers
                     description = _event.Description,
                     resourceId = _event.LocationId,
                     allDay = _event.isFullDay,
-                });
+					locationName = _locationName,
+
+				});
             }
             return System.Text.Json.JsonSerializer.Serialize(eventList);
         }
@@ -48,6 +51,7 @@ namespace CalendarApp.Helpers
         public int resourceId { get; set; }
         public bool allDay { get; set; }
         public string color { get; set; }
+        public string locationName { get; set; }
     }
 
     public class CalendarResourceModel

@@ -1,6 +1,9 @@
 ﻿using CalendarApp.Data;
 using CalendarApp.Helpers;
 using CalendarApp.Models;
+using CalendarApp.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -10,20 +13,32 @@ namespace CalendarApp.Controllers
 	{
         private readonly IDAL _idal;
         private readonly ILogger<HomeController> _logger;
+		private readonly UserManager<ApplicationUser> _userManager;
 
-		public HomeController(ILogger<HomeController> logger, IDAL idal)
+		public HomeController(ILogger<HomeController> logger, IDAL idal, UserManager<ApplicationUser> userManager)
 		{
 			_idal = idal;
 			_logger = logger;
+			_userManager = userManager;
 		}
+
 
 		public IActionResult Index()
 		{
-			//var result = JSONListHelper.GetEventListJSONString(_idal.GetEvents());
-			ViewData["EventList"] = JSONListHelper.GetEventListJSONString(_idal.GetEvents());
-			ViewData["ResourceList"] = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
-			//return Ok(result);
             return View();
+		}
+		[Authorize]
+		public async Task<IActionResult> MyCalendar()
+		{
+			var _user = await _userManager.GetUserAsync(User);
+			if (_user != null)
+			{
+				var userId = await _userManager.GetUserIdAsync(_user);
+				ViewData["UserId"] = userId;
+			ViewData["EventList"] = JSONListHelper.GetEventListJSONString(_idal.GetMyEvents(userId));
+			ViewData["ResourceList"] = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
+			}
+			return View(new EventViewModel(_idal.GetLocations()));
 		}
 
 		public IActionResult Privacy()

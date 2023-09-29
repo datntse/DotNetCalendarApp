@@ -30,6 +30,10 @@
                 <span asp-validation-for="Event.StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>FullDay</label>
+                @Html.CheckBoxFor(x => x.Event.isFullDay, new {id = "Event_isFullDay"});
+            </div>
+            <div class="form-group">
                 <label asp-for="Event.EndTime" class="control-label"></label>
                 <input asp-for="Event.EndTime" class="form-control" />
                 <span asp-validation-for="Event.EndTime" class="text-danger"></span>
