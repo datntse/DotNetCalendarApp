@@ -30,29 +30,43 @@ namespace CalendarApp.Models
         {
         }
 
-        public Event(IFormCollection form, Location location)
-        {
-            Name = form["Event.Name"].ToString();
-            Description = form["Event.Description"].ToString();
-            StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
-            EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
-            isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
-            UserId = form["Event.UserId"].ToString();
-			LocationId = location.Id;
-            Location = location;
-        }
+		//public Event(IFormCollection form, Location location)
+		//{
+		//	Name = form["Event.Name"].ToString();
+		//	Description = form["Event.Description"].ToString();
+		//	StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
+		//	EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
+		//	isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
+		//	UserId = form["Event.UserId"].ToString();
+		//	LocationId = location.Id;
+		//	Location = location;
+		//}
+		public Event(IFormCollection form, Location location)
+		{
+			UserId = form["Event.UserId"].ToString();
+			Name = form["Name"].ToString();
+			Description = form["Description"].ToString();
+			StartTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			if (form["isFullDay"].ToString().Length > 0)
+			{
+				isFullDay = true;
+			}
+			else { isFullDay = false; };
+			Location = location;
+		}
 
-        //public void UpdateEvent(IFormCollection form, Location location)
-        //{
-        //    Name = form["Event.Name"].ToString();
-        //    Description = form["Event.Description"].ToString();
-        //    StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
-        //    EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
-        //    isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
-        //    //LocationId = location.Id;
-        //    Location = location;
-        //}
-        public void UpdateEvent(IFormCollection form, Location location)
+		//public void UpdateEvent(IFormCollection form, Location location)
+		//{
+		//    Name = form["Event.Name"].ToString();
+		//    Description = form["Event.Description"].ToString();
+		//    StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
+		//    EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
+		//    isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
+		//    //LocationId = location.Id;
+		//    Location = location;
+		//}
+		public void UpdateEvent(IFormCollection form, Location location)
         {
             Name = form["Name"].ToString();
             Description = form["Description"].ToString();
