@@ -9,7 +9,8 @@ namespace CalendarApp.Data
         public List<Event> GetMyEvents(string userId);
         public Event GetEvent(int id);
         public Task<Status> CreateEvent(IFormCollection form);
-        public Task<Status> UpdateEvent(IFormCollection form);
+        public Task<Status> CreateEventDetails(IFormCollection form);
+		public Task<Status> UpdateEvent(IFormCollection form);
         public Task<Status> DeleteEvent(int id);
 
         public List<Location> GetLocations();
@@ -59,6 +60,7 @@ namespace CalendarApp.Data
                 if (locationEvent != null)
                 {
                     var _event = new Event(form, locationEvent);
+                    //var _eventDetail = _event.EventDetail(form, locationEvent);
                     _context.Events.Add(_event);
                     await _context.SaveChangesAsync();
                     status.Code = 1;
@@ -73,7 +75,33 @@ namespace CalendarApp.Data
             return status;
         }
 
-        public async Task<Status> DeleteEvent(int id)
+		public async Task<Status> CreateEventDetails(IFormCollection form)
+		{
+			var status = new Status();
+			var locationName = form["Location"].ToString();
+
+			try
+			{
+				var locationEvent = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
+				if (locationEvent != null)
+				{
+					var _event = new Event(form, locationEvent);
+                    var _eventDetail = _event.EventDetail(form, locationEvent);
+                    _context.Events.Add(_eventDetail);
+					await _context.SaveChangesAsync();
+					status.Code = 1;
+					status.Message = "Create new Event Successfully";
+				}
+			}
+			catch (Exception)
+			{
+				status.Code = 0;
+				status.Message = "Invalid data in form or parse error";
+			}
+			return status;
+		}
+
+		public async Task<Status> DeleteEvent(int id)
         {
             var status = new Status();
 

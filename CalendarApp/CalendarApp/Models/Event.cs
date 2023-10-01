@@ -30,17 +30,38 @@ namespace CalendarApp.Models
 		{
 		}
 
-		//public Event(IFormCollection form, Location location)
-		//{
-		//	Name = form["Event.Name"].ToString();
-		//	Description = form["Event.Description"].ToString();
-		//	StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
-		//	EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
-		//	isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
-		//	UserId = form["Event.UserId"].ToString();
-		//	LocationId = location.Id;
-		//	Location = location;
-		//}
+		public Event EventDetail(IFormCollection form, Location location)
+		{
+			var name = form["Event.Name"].ToString();
+			var description = form["Event.Description"].ToString();
+			var startTime = DateTime.Parse(form["Event.StartTime"].ToString());
+			var endTime = DateTime.Parse(form["Event.EndTime"].ToString());
+			var isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
+			var userId = form["Event.UserId"].ToString();
+			var locationId = location.Id;
+
+			return new Event
+			{
+				Name = name,
+				Description = description,
+				StartTime = startTime,
+				EndTime = endTime,
+				isFullDay = isFullDay,
+				UserId = userId,
+				LocationId = locationId,
+				Location = location,
+			};
+		}
+		public void UpdateEventDetail(IFormCollection form, Location location)
+		{
+			Name = form["Event.Name"].ToString();
+			Description = form["Event.Description"].ToString();
+			StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
+			EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
+			isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
+			//LocationId = location.Id;
+			Location = location;
+		}
 		public Event(IFormCollection form, Location location)
 		{
 			UserId = form["UserId"].ToString();
@@ -60,16 +81,6 @@ namespace CalendarApp.Models
 			Location = location;
 		}
 
-		//public void UpdateEvent(IFormCollection form, Location location)
-		//{
-		//    Name = form["Event.Name"].ToString();
-		//    Description = form["Event.Description"].ToString();
-		//    StartTime = DateTime.Parse(form["Event.StartTime"].ToString());
-		//    EndTime = DateTime.Parse(form["Event.EndTime"].ToString());
-		//    isFullDay = bool.Parse(form["Event.isFullDay"].ToString().Split(',')[0]);
-		//    //LocationId = location.Id;
-		//    Location = location;
-		//}
 		public void UpdateEvent(IFormCollection form, Location location)
 		{
 			Name = form["Name"].ToString();

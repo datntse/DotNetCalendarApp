@@ -10,19 +10,18 @@
 }
 @inject UserManager<ApplicationUser> UserManager
 
-<h1>Create</h1>
+<h1>Create new event details</h1>
 @if (ViewData["Message"] != null)
 {
 	<h3>@ViewData["Message"]</h3>
 }
 <p>
 
-
 	<h4>Event</h4>
 	<hr />
 
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-6">
 			<h1></h1>
 			<form asp-action="Create">
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -40,6 +39,7 @@
 						<p>User is not logged in.</p>
 					}
 				}
+
 				<div class="form-group">
 					<label asp-for="Event.Name" class="control-label"></label>
 					<input asp-for="Event.Name" class="form-control" />
@@ -51,30 +51,42 @@
 					<span asp-validation-for="Event.Description" class="text-danger"></span>
 				</div>
 
-				<div class="form-group">
-					<label>FullDay</label>
-					@Html.CheckBoxFor(x => x.Event.isFullDay, new {id = "Event_isFullDay"});
+				<div class="row">
+					<div class="col-md-9">
+						<div class="form-group">
+							<label asp-for="Event.StartTime" class="control-label"></label>
+							<input asp-for="Event.StartTime" class="form-control" />
+							<span asp-validation-for="Event.StartTime" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="Event.EndTime" class="control-label"></label>
+							<input asp-for="Event.EndTime" class="form-control" />
+							<span asp-validation-for="Event.EndTime" class="text-danger"></span>
+						</div>
+					</div>
+
+					<div class="col-md-3" >
+						<div class="form-group" style="margin-top: 30px">
+							@Html.CheckBoxFor(x => x.Event.isFullDay, new {id = "Event_isFullDay"})
+							<label>All day</label>
+						</div>
+					</div>
+
+
 				</div>
 
-				<div class="form-group">
-					<label asp-for="Event.StartTime" class="control-label"></label>
-					<input asp-for="Event.StartTime" class="form-control" />
-					<span asp-validation-for="Event.StartTime" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<label asp-for="Event.EndTime" class="control-label"></label>
-					<input asp-for="Event.EndTime" class="form-control" />
-					<span asp-validation-for="Event.EndTime" class="text-danger"></span>
-				</div>
 
 				<div class="form-group">
 					<label>Location</label>
 					@Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
 				</div>
-				<div class="form-group">
-					<input type="submit" value="Create" class="btn btn-primary" />
+				<div class="form-group" style="margin-top: 10px">
+					<input type="submit" value="Save" class="btn btn-primary" />
 				</div>
 			</form>
+		</div>
+		<div class="col-md-6">
+			<img src="https://images.idgesg.net/images/article/2019/04/google-calendar-android-100794956-large.jpg?auto=webp&quality=85,70" width="100%"/>
 		</div>
 	</div>
 
@@ -89,16 +101,12 @@
 		var endDay = $('#Event_EndTime');
 			isFullDayCheckbox.click(function () {	
 			if (isFullDayCheckbox.checked) {
-				// Set the date value to today at 12 AM
-				//var today = new Date();
-				//today.setHours(0, 0, 0, 0);
-				//var formattedDate = formatDate(today);
 				console.log(startDay);
 				startDay.value = "2023-09-29";
 				startDay.readOnly = true;
 				endDay.readOnly = true;
 			} else {
-				// Clear the date input
+
 				startDay.value = "";
 				endDay.value = "";
 			}

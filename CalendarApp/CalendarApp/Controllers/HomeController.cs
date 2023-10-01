@@ -41,6 +41,13 @@ namespace CalendarApp.Controllers
 			return View(new EventViewModel(_idal.GetLocations()));
 		}
 
+
+		public async Task<IActionResult> RemindTask(string userId)
+		{
+			/// 1 tao reminder sau khi tao 1 event.
+			/// sau do tao 1 cai count down. chay song song voi chuong trinh. 
+			return View();
+		}
 		public IActionResult Privacy()
 		{
 			return View();

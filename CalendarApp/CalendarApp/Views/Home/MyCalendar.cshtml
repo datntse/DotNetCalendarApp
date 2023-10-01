@@ -19,38 +19,53 @@
 	</div>
 </div>
 
-<div id="myModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
+<div id="myModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">
-					<span id="eventTitle"></span>
-				</h4>
+				<h5 class="modal-title" id="staticBackdropLabel"><span id="eventTitle"></span></h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
 			</div>
 			<div class="modal-body">
-				<button id="btnDelete" class="btn btn-danger btn-sm col-md-2 pull-right">
-					Delete
-				</button>
-				<button id="btnEdit" class="btn btn-warning btn-sm col-md-2 pull-right" style="margin-left: 5px">
-					Edit
-				</button>
-				<p id="pDetails"></p>
+				<div class="container-fluid">
+					<div class="row">
+
+						<div class="col-md-8">
+							<p id="pDetails"></p>
+						</div>
+						<div class="col-md-4 ms-auto">
+							<button id="btnDelete" class="btn btn-danger btn-sm pull-right">
+								Delete
+							</button>
+							<button id="btnEdit" class="btn btn-warning btn-sm pull-right" style="margin-left: 5px">
+								Edit
+							</button>
+						</div>
+					</div>
+				</div>
+
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 
+
+
+
 <div id="myModalSave" class="modal fade savemodal" role="dialog">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="savemodal">&times;</button>
 				<h4 class="modal-title">Save Event</h4>
+				<button type="button" class="btn btn-danger">
+					<a asp-controller="Event" asp-action="Create">More details</a>
+				</button>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" id="editForm">
@@ -86,7 +101,7 @@
 							<label><input type="checkbox" id="chkIsFullDay" name="isFullDay" checked="checked" /> Is Full Day event</label>
 						</div>
 					</div>
-					<div class="form-group" id="divEndDate" style="display:none">
+					<div class="form-group" id="divEndDate">
 						<label>End</label>
 						<div class="input-group date" id="dtp2">
 							<input type="text" id="txtEnd" name="EndTime" class="form-control" />
@@ -103,8 +118,10 @@
 						<label>Location</label>
 						@Html.DropDownList("Location", Model.Locations, "Select a location", new { @class="form-control"})
 					</div>
-					<button type="button" id="btnSave" class="btn btn-success">Save</button>
-					<button type="button" class="btn btn-default" id="CloseEditModelBtn" data-dismiss="savemodal">Close</button>
+					<div class="form-group" style="margin-top: 10px">
+						<button type="button" id="btnSave" class="btn btn-success" style="margin-right: 20px">Save</button>
+						<button type="button" class="btn btn-default" id="CloseEditModelBtn" data-dismiss="savemodal">Close</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -123,7 +140,7 @@
 		document.addEventListener('DOMContentLoaded', function () {
 
 			var currentDate = new Date();
-			const datetimepicker1 = new tempusDominus.TempusDominus(document.getElementById('dtp1'));
+			//const datetimepicker1 = new tempusDominus.TempusDominus(document.getElementById('dtp1'));
 
 
 			var selectedEvent = null;
@@ -150,22 +167,19 @@
 					eventLocation = calEvent.event.extendedProps.locationName;
 					$('#myModal #eventTitle').text(calEvent.event.title);
 					var $description = $('<div/>');
-					$description.append($('<p/>').html('<b>Start:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A')));
+					$description.append($('<p/>').html('<b>Start Time:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A')));
 
 					if (calEvent.event.end != null) {
-						$description.append($('<p/>').html('<b>End:</b>' + moment(calEvent.event.end).format('DD-MM-YYYY HH:mm A')));
+						$description.append($('<p/>').html('<b>End Time:</b>' + moment(calEvent.event.end).format('DD-MM-YYYY HH:mm A')));
 					}
 
-					$description.append($('<p/>').html('<b>Description:</b>' + calEvent.event.extendedProps.description));
+					$description.append($('<p/>').html('<b>Event Description:</b>' + calEvent.event.extendedProps.description));
 					$description.append($('<p/>').html('<b>Location:</b>' + calEvent.event.extendedProps.locationName));
-					$description.append($('<p/>').html('<b>Id Event:</b>' + calEvent.event.id));
 					$('#myModal #pDetails').empty().html($description);
 					$('#myModal').modal('show');
 				},
 				selectable: true,
 				select: function (event) {
-					console.log('time', event.start);
-					console.log('time', event.end);
 					selectedEvent = {
 						id: 0,
 						title: '',
@@ -236,11 +250,31 @@
 			}
 
 			$('#chkIsFullDay').change(function () {
-				if ($(this).is(':checked')) {
-					$('#divEndDate').hide();
+				if ($('#chkIsFullDay').is(':checked')) {
+
+					var _start = $('#txtStart').val();
+					var _end = $('#txtEnd').val();
+
+					console.log(_start);
+					console.log(_end);
+
+					var replaceStartTime = _start.replace('00:00 AM', '12:00 AM');
+					var replaceEndTime = _end.replace('00:00 AM', '12:00 AM');
+
+
+
+					$('#txtStart').val(replaceStartTime);
+					$('#txtEnd').val(replaceEndTime);
+					$("#txtStart").blur();
+					$("#txtEnd").blur();
 				}
 				else {
-					$('#divEndDate').show();
+					var _start = $('#txtStart').val();
+					var _end = $('#txtEnd').val();
+					var replaceStartTime = _start.replace('12:00 AM', '00:00 AM');
+					var replaceEndTime = _end.replace('12:00 AM', '00:00 AM');
+					$('#txtStart').val(replaceStartTime);
+					$('#txtEnd').val(replaceEndTime);
 				}
 			});
 

@@ -74,7 +74,7 @@ namespace CalendarApp.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(EventViewModel model, IFormCollection form)
 		{
-			var result = await _dal.CreateEvent(form);
+			var result = await _dal.CreateEventDetails(form);
 			if (result.Code == 1)
 			{
 				ViewData["Message"] = result.Message;
