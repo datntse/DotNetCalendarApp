@@ -79,13 +79,12 @@ namespace CalendarApp.Data
 		{
 			var status = new Status();
 			var locationName = form["Location"].ToString();
-
 			try
 			{
 				var locationEvent = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
 				if (locationEvent != null)
 				{
-					var _event = new Event(form, locationEvent);
+					var _event = new Event();
                     var _eventDetail = _event.EventDetail(form, locationEvent);
                     _context.Events.Add(_eventDetail);
 					await _context.SaveChangesAsync();

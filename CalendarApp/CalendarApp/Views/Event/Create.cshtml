@@ -93,22 +93,51 @@
 	<div>
 		<a asp-action="Index">Back to List</a>
 	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script>
 		var isFullDayCheckbox = $('#Event_isFullDay');
 		console.log(isFullDayCheckbox);
-		var startDay = $('#Event_StartTime');
-		var endDay = $('#Event_EndTime');
-			isFullDayCheckbox.click(function () {	
-			if (isFullDayCheckbox.checked) {
-				console.log(startDay);
-				startDay.value = "2023-09-29";
-				startDay.readOnly = true;
-				endDay.readOnly = true;
-			} else {
 
-				startDay.value = "";
-				endDay.value = "";
+		var currentDate = new Date();
+		var startDay = $('#Event_StartTime');
+		console.log(startDay);
+		console.log(currentDate);
+
+
+		var endDay = $('#Event_EndTime');
+		startDay.val(''+moment(currentDate).format('DD-MM-YYYY HH:mm A'));
+		
+		
+		isFullDayCheckbox.click(function () {	
+			if (isFullDayCheckbox.checked) {
+				var startDay = $('#Event_StartTime');
+				var endDay = $('#Event_EndTime');
+				var _start = startDay.val();
+				var _end = endDay.val();
+
+				console.log(_start);
+				console.log(_end);
+
+				var replaceStartTime = _start.replace('00:00 AM', '12:00 AM');
+				var replaceEndTime = _end.replace('00:00 AM', '12:00 AM');
+
+				startDay.val(replaceStartTime);
+				endDay.val(replaceEndTime);
+				startDay.blur();
+				endDay.blur();
+			}
+			else {
+				var startDay = $('#Event_StartTime');
+				var endDay = $('#Event_EndTime');
+				var _start = startDay.val();
+				var _end = endDay.val();
+				var replaceStartTime = _start.replace('12:00 AM', '00:00 AM');
+				var replaceEndTime = _end.replace('12:00 AM', '00:00 AM');
+				startDay.val(replaceStartTime);
+				endDay.val(replaceEndTime);
 			}
 		});
 	</script>
