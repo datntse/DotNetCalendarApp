@@ -1,5 +1,6 @@
 using CalendarApp.Data;
 using CalendarApp.Helpers;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseSqlServer(connectionString)
 	.UseLazyLoadingProxies());
 
+//Hangfire Services
+builder.Services.AddHangfire(options => options.UseSqlServerStorage(connectionString));
+builder.Services.AddHangfireServer();
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -20,6 +25,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IDAL, DAL>();
 builder.Services.AddInfrastructure();
+
 
 var app = builder.Build();
 
@@ -37,6 +43,8 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseHangfireDashboard();
 
 app.UseRouting();
 
