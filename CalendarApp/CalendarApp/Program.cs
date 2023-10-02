@@ -1,4 +1,5 @@
 using CalendarApp.Data;
+using CalendarApp.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IDAL, DAL>();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

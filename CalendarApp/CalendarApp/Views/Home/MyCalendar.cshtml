@@ -145,57 +145,60 @@
 
 			var selectedEvent = null;
 			var eventLocation = null;
+			FetchCalendar();
+			function FetchCalendar() {
+				var calendarEl = document.getElementById('calendar');
+				var calendar = new FullCalendar.Calendar(calendarEl, {
+					contentHeight: 700,
+					initialView: 'dayGridMonth',
+					events: @Html.Raw(ViewData["EventList"]),
+					resources: @Html.Raw(ViewData["ResourceList"]),
+					headerToolbar: {
+						left: 'today prev,next',
+						center: 'title',
+						right: 'timeGridWeek,dayGridMonth,listMonth,resourceTimeGridDay'
+					},
+					validRange: {
+						start: currentDate,
+						end: '2100-12-31',
+					},
+					dayMaxEvents: true,
+					eventClick: function (calEvent) {
+						selectedEvent = calEvent.event;
+						eventLocation = calEvent.event.extendedProps.locationName;
+						$('#myModal #eventTitle').text(calEvent.event.title);
+						var $description = $('<div/>');
+						$description.append($('<p/>').html('<b>Start Time:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A')));
 
-			var calendarEl = document.getElementById('calendar');
-			var calendar = new FullCalendar.Calendar(calendarEl, {
-				contentHeight: 700,
-				initialView: 'dayGridMonth',
-				events: @Html.Raw(ViewData["EventList"]),
-				resources: @Html.Raw(ViewData["ResourceList"]),
-				headerToolbar: {
-					left: 'today prev,next',
-					center: 'title',
-					right: 'timeGridWeek,dayGridMonth,listMonth,resourceTimeGridDay'
-				},
-				validRange: {
-					start: currentDate,
-					end: '2100-12-31',
-				},
-				dayMaxEvents: true,
-				eventClick: function (calEvent) {
-					selectedEvent = calEvent.event;
-					eventLocation = calEvent.event.extendedProps.locationName;
-					$('#myModal #eventTitle').text(calEvent.event.title);
-					var $description = $('<div/>');
-					$description.append($('<p/>').html('<b>Start Time:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A')));
+						if (calEvent.event.end != null) {
+							$description.append($('<p/>').html('<b>End Time:</b>' + moment(calEvent.event.end).format('DD-MM-YYYY HH:mm A')));
+						}
 
-					if (calEvent.event.end != null) {
-						$description.append($('<p/>').html('<b>End Time:</b>' + moment(calEvent.event.end).format('DD-MM-YYYY HH:mm A')));
-					}
+						$description.append($('<p/>').html('<b>Event Description:</b>' + calEvent.event.extendedProps.description));
+						$description.append($('<p/>').html('<b>Location:</b>' + calEvent.event.extendedProps.locationName));
+						$('#myModal #pDetails').empty().html($description);
+						$('#myModal').modal('show');
+					},
+					selectable: true,
+					select: function (event) {
+						selectedEvent = {
+							id: 0,
+							title: '',
+							extendedProps: {
+								description: '',
+								locationName: '',
+							},
+							start: event.start,
+							end: event.end,
+							allDay: false,
+						};
+						openAddEditForm();
+					},
 
-					$description.append($('<p/>').html('<b>Event Description:</b>' + calEvent.event.extendedProps.description));
-					$description.append($('<p/>').html('<b>Location:</b>' + calEvent.event.extendedProps.locationName));
-					$('#myModal #pDetails').empty().html($description);
-					$('#myModal').modal('show');
-				},
-				selectable: true,
-				select: function (event) {
-					selectedEvent = {
-						id: 0,
-						title: '',
-						extendedProps: {
-							description: '',
-							locationName: '',
-						},
-						start: event.start,
-						end: event.end,
-						allDay: false,
-					};
-					openAddEditForm();
-				},
+				});
+				calendar.render();
+			}
 
-			});
-			calendar.render();
 
 
 			$('#CloseEditModelBtn').click(function () {
@@ -314,6 +317,9 @@
 				else {
 					var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
 					var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+
+
+
 					if (startDate > endDate) {
 						alert('Invalid end date');
 						isValid = false;
@@ -342,8 +348,17 @@
 					processData: false,
 					contentType: false,
 					success: function (response) {
-						location.reload();
-						alert("Success");
+						$.ajax({
+							url: "/Home/MyCalendar",
+							type: "GET",
+							data: formdata,
+							processData: false,
+							contentType: false,
+							success: function (response) {
+								FetchCalendar();
+								alert("Success");
+							},
+						});
 					},
 					error: function (error) {
 						// Handle any errors

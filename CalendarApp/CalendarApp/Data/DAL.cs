@@ -60,7 +60,6 @@ namespace CalendarApp.Data
                 if (locationEvent != null)
                 {
                     var _event = new Event(form, locationEvent);
-                    //var _eventDetail = _event.EventDetail(form, locationEvent);
                     _context.Events.Add(_event);
                     await _context.SaveChangesAsync();
                     status.Code = 1;
