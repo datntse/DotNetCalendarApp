@@ -11,8 +11,8 @@ namespace CalendarApp.Controllers
 {
 	public class HomeController : Controller
 	{
-        private readonly IDAL _idal;
-        private readonly ILogger<HomeController> _logger;
+		private readonly IDAL _idal;
+		private readonly ILogger<HomeController> _logger;
 		private readonly UserManager<ApplicationUser> _userManager;
 
 		public HomeController(ILogger<HomeController> logger, IDAL idal, UserManager<ApplicationUser> userManager)
@@ -25,7 +25,7 @@ namespace CalendarApp.Controllers
 
 		public IActionResult Index()
 		{
-            return View();
+			return View();
 		}
 		[Authorize]
 		public async Task<IActionResult> MyCalendar()
@@ -35,8 +35,11 @@ namespace CalendarApp.Controllers
 			{
 				var userId = await _userManager.GetUserIdAsync(_user);
 				ViewData["UserId"] = userId;
-			ViewData["EventList"] = JSONListHelper.GetEventListJSONString(_idal.GetMyEvents(userId));
-			ViewData["ResourceList"] = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
+				
+				var _eventList = JSONListHelper.GetEventListJSONString(_idal.GetMyEvents(userId));
+				var _locationList = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
+				ViewData["EventList"] = _eventList;
+				ViewData["ResourceList"] = _locationList;
 			}
 			return View(new EventViewModel(_idal.GetLocations()));
 		}

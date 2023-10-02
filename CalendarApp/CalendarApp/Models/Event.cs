@@ -67,7 +67,11 @@ namespace CalendarApp.Models
 			UserId = form["UserId"].ToString();
 			Name = form["Name"].ToString();
 			Description = form["Description"].ToString();
-			StartTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
+			//StartTime = DateTime.Parse(form["StartTime"].ToString());
+			//EndTime = DateTime.Parse(form["EndTime"].ToString());
+
+			//Fix create time to reminder
+		   StartTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
 			EndTime = DateTime.ParseExact(form["EndTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
 
 			if (form["isFullDay"].ToString().Length > 0)
