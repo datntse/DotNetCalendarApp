@@ -279,3 +279,6 @@ D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Deb
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\tr-TR\Hangfire.Core.resources.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\zh-TW\Hangfire.Core.resources.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\zh\Hangfire.Core.resources.dll
+D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.AspNetCore.Http.Connections.Client.dll
+D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.dll
+D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.Core.dll

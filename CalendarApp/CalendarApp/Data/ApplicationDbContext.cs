@@ -13,7 +13,7 @@ namespace CalendarApp.Data
 
 		public DbSet<Event> Events { get; set; }
         public DbSet<Location> Locations { get; set; }
-
+	
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

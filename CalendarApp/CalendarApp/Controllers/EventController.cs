@@ -9,6 +9,8 @@ using CalendarApp.Data;
 using CalendarApp.Models;
 using CalendarApp.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Hangfire;
+using CalendarApp.Service.Abtract;
 
 namespace CalendarApp.Controllers
 {
@@ -16,9 +18,14 @@ namespace CalendarApp.Controllers
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IDAL _dal;
+		private readonly IBackgroundJobClient _backgroundJobClient;
+		private readonly IJobService _jobService;
 
-		public EventController(IDAL idal, UserManager<ApplicationUser> userManager)
+		public EventController(IDAL idal, UserManager<ApplicationUser> userManager,
+			IBackgroundJobClient backgroundJobClient, IJobService jobService)
 		{
+			_backgroundJobClient = backgroundJobClient;
+			_jobService = jobService;
 			_userManager = userManager;
 			_dal = idal;
 		}
@@ -92,16 +99,30 @@ namespace CalendarApp.Controllers
 		public async Task<JsonResult> EditEvent(IFormCollection form)
 		{
 			var eventId = int.Parse(form["id"].ToString());
+			var userId = (form["UserId"].ToString());
 			var status = new Status();
+			if (userId != null)
+			{
 			
-			if(eventId != 0)
-			{
-				status = await _dal.UpdateEvent(form);
-			} else
-			{
-				status = await _dal.CreateEvent(form);
+
+				// tao 1 job co id.
+				//var jobId = _backgroundJobClient.Schedule()
+				// voi moi event duoc tao ra => thi tao 1 background job tuong ung. (jobid) schedule job
+				// Neu user update event do ..... handle sau. 
+
+				if (eventId != 0)
+				{
+					status = await _dal.UpdateEvent(form);
+
+				}
+				else
+				{
+					Event _event = await _dal.CreateEvent(form);
+					await _jobService.ReminderTask(_event);
+
+				}
 			}
-			return new JsonResult(status.Code);
+			return new JsonResult(status);
 		}
 
 		[HttpPost]

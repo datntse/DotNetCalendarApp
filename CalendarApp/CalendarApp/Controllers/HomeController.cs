@@ -2,9 +2,12 @@
 using CalendarApp.Helpers;
 using CalendarApp.Models;
 using CalendarApp.Models.ViewModels;
+using CalendarApp.Service.Abtract;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 
 namespace CalendarApp.Controllers
@@ -12,14 +15,21 @@ namespace CalendarApp.Controllers
 	public class HomeController : Controller
 	{
 		private readonly IDAL _idal;
+		private readonly IJobService _jobService;
 		private readonly ILogger<HomeController> _logger;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IBackgroundJobClient _backgroundJobClient;
 
-		public HomeController(ILogger<HomeController> logger, IDAL idal, UserManager<ApplicationUser> userManager)
+		public HomeController(ILogger<HomeController> logger, IDAL idal, 
+			UserManager<ApplicationUser> userManager,
+			IBackgroundJobClient backgroundJobClient,
+			IJobService jobService)
 		{
 			_idal = idal;
+			_jobService = jobService;
 			_logger = logger;
 			_userManager = userManager;
+			_backgroundJobClient = backgroundJobClient;
 		}
 
 
@@ -41,16 +51,11 @@ namespace CalendarApp.Controllers
 				ViewData["EventList"] = _eventList;
 				ViewData["ResourceList"] = _locationList;
 			}
+			
 			return View(new EventViewModel(_idal.GetLocations()));
 		}
 
-
-		public async Task<IActionResult> RemindTask(string userId)
-		{
-			/// 1 tao reminder sau khi tao 1 event.
-			/// sau do tao 1 cai count down. chay song song voi chuong trinh. 
-			return View();
-		}
+		
 		public IActionResult Privacy()
 		{
 			return View();

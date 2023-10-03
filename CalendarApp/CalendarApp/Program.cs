@@ -1,5 +1,7 @@
 using CalendarApp.Data;
 using CalendarApp.Helpers;
+using CalendarApp.Service.Abtract;
+using CalendarApp.Service.Implements;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 	.AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+//DI
 builder.Services.AddScoped<IDAL, DAL>();
+builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddInfrastructure();
 
 
