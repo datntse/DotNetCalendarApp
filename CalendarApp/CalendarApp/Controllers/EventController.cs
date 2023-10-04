@@ -101,10 +101,11 @@ namespace CalendarApp.Controllers
 			var eventId = int.Parse(form["id"].ToString());
 			var userId = (form["UserId"].ToString());
 			var status = new Status();
+
+			Event _event = null;
+
 			if (userId != null)
 			{
-			
-
 				// tao 1 job co id.
 				//var jobId = _backgroundJobClient.Schedule()
 				// voi moi event duoc tao ra => thi tao 1 background job tuong ung. (jobid) schedule job
@@ -112,15 +113,16 @@ namespace CalendarApp.Controllers
 
 				if (eventId != 0)
 				{
-					status = await _dal.UpdateEvent(form);
+					_event = await _dal.UpdateEvent(form);
 
 				}
 				else
 				{
-					Event _event = await _dal.CreateEvent(form);
-					await _jobService.ReminderTask(_event);
-
+					 _event = await _dal.CreateEvent(form);
 				}
+				//create backgorund job
+				await _jobService.ReminderTask(_event);
+
 			}
 			return new JsonResult(status);
 		}
@@ -178,16 +180,15 @@ namespace CalendarApp.Controllers
 				return NotFound();
 			}
 
-
-			var result = await _dal.UpdateEvent(form);
-			if (result.Code == 1)
+			var _event = await _dal.UpdateEvent(form);
+			if (_event != null)
 			{
-				TempData["Message"] = result.Message;
+				TempData["Message"] = _event.Name;
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
-				ViewData["Message"] = result.Message;
+				ViewData["Message"] = _event.Name;
 			}
 
 			return View(model);

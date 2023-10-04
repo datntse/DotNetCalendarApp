@@ -11,16 +11,13 @@ namespace CalendarApp.Service.Implements
 	public class JobService : IJobService
 	{
 		private readonly IBackgroundJobClient _backgroundJobClient;
-		private readonly JobStorage _jobStorage;
-		private readonly IMonitoringApi _monitoringApi;
-		public JobService(IBackgroundJobClient backgroundJobClient, ApplicationDbContext conte, IMonitoringApi monitoringApixt, JobStorage jobStorage,
-			IMonitoringApi monitoringApi)
+		private readonly ApplicationDbContext _context;
+
+		public JobService(IBackgroundJobClient backgroundJobClient, ApplicationDbContext context)
 		{
 			_backgroundJobClient = backgroundJobClient;
-			_jobStorage = jobStorage;
-			_monitoringApi = monitoringApi;
+			_context = context;
 		}
-
 		// tao delayed job khi tao 1 event. 
 		// lay so luong trong 1 list luu vo bien static. 
 
@@ -34,11 +31,35 @@ namespace CalendarApp.Service.Implements
 			var _eventId = _event.Id;
 			var remindTime = _event.StartTime.Subtract(TimeSpan.FromMinutes(30));
 
-			Hangfire.JobStorage.Current.GetMonitoringApi();
-
-			var connection = _jobStorage.GetConnection();
-		
+			var listJobArguments = _context.Jobs.Where(x => x.Arguments != null && x.ExpireAt == null).ToList();
+			
+			// handle if list backgorund job is expired
+			if(listJobArguments.Count() == 0)
+			{
 				var jobId = _backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+			}
+
+			foreach (var job in listJobArguments)
+			{
+				// lay job ra xong check job arguement. 
+				// handle create voi update.
+				if(!job.Arguments.Contains(_eventId.ToString()))
+				{
+					// create job.
+					var jobId = _backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+				}
+				else if (job.Arguments.Contains(_eventId.ToString()))
+				{
+					//updated job.
+					// xoa job do roi tao lai job moi.
+					var currentJobId = job.Id.ToString();
+					BackgroundJob.Delete(currentJobId);
+					_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+				}
+				
+			}
+
+
 		}
 
 		public void NotifyForUser(int eventId)

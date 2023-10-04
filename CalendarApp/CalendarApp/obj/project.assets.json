@@ -114,6 +114,23 @@
           }
         }
       },
+      "Hangfire.EntityFrameworkCore/0.5.0": {
+        "type": "package",
+        "dependencies": {
+          "Hangfire.Core": "[1.7.0, 2.0.0)",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Hangfire.EntityFrameworkCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Hangfire.EntityFrameworkCore.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Hangfire.NetCore/1.8.5": {
         "type": "package",
         "dependencies": {
@@ -4609,6 +4626,26 @@
         "lib/netstandard2.0/tr-TR/Hangfire.Core.resources.dll",
         "lib/netstandard2.0/zh-TW/Hangfire.Core.resources.dll",
         "lib/netstandard2.0/zh/Hangfire.Core.resources.dll"
+      ]
+    },
+    "Hangfire.EntityFrameworkCore/0.5.0": {
+      "sha512": "VmQYBarXNIuVHGOc29OkawUlWbd3TKKoqWdmn+cOUPu2btzcZRrOD4ORO5joDTTBxklN4lSfc2QhfA9R//FS2w==",
+      "type": "package",
+      "path": "hangfire.entityframeworkcore/0.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "hangfire.entityframeworkcore.0.5.0.nupkg.sha512",
+        "hangfire.entityframeworkcore.nuspec",
+        "lib/net6.0/Hangfire.EntityFrameworkCore.dll",
+        "lib/net6.0/Hangfire.EntityFrameworkCore.xml",
+        "lib/net7.0/Hangfire.EntityFrameworkCore.dll",
+        "lib/net7.0/Hangfire.EntityFrameworkCore.xml",
+        "lib/netstandard2.0/Hangfire.EntityFrameworkCore.dll",
+        "lib/netstandard2.0/Hangfire.EntityFrameworkCore.xml",
+        "lib/netstandard2.1/Hangfire.EntityFrameworkCore.dll",
+        "lib/netstandard2.1/Hangfire.EntityFrameworkCore.xml"
       ]
     },
     "Hangfire.NetCore/1.8.5": {
@@ -12537,6 +12574,7 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "Hangfire >= 1.8.5",
+      "Hangfire.EntityFrameworkCore >= 0.5.0",
       "Hangfire.SqlServer >= 1.8.5",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 6.0.16",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 6.0.16",
@@ -12592,6 +12630,10 @@
           "Hangfire": {
             "target": "Package",
             "version": "[1.8.5, )"
+          },
+          "Hangfire.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[0.5.0, )"
           },
           "Hangfire.SqlServer": {
             "target": "Package",

@@ -12,7 +12,8 @@ namespace CalendarApp.Data
 		//public Task<Status> CreateEvent(IFormCollection form);
 		public Task<Event> CreateEvent(IFormCollection form);
 		public Task<Status> CreateEventDetails(IFormCollection form);
-		public Task<Status> UpdateEvent(IFormCollection form);
+		//public Task<Status> UpdateEvent(IFormCollection form);
+		public Task<Event> UpdateEvent(IFormCollection form);
 		public Task<Status> DeleteEvent(int id);
 
 		public List<Location> GetLocations();
@@ -168,28 +169,28 @@ namespace CalendarApp.Data
 		//    return status;
 		//}
 		// 000000000000 test for ajax 
-		public async Task<Status> UpdateEvent(IFormCollection form)
+		public async Task<Event> UpdateEvent(IFormCollection form)
 		{
-			var status = new Status();
 			var locationName = form["Location"].ToString();
 			var eventId = int.Parse(form["Id"]);
 			try
 			{
+
 				var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
 				var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
 				eventSelectd.UpdateEvent(form, location);
 
 				_context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 				await _context.SaveChangesAsync();
-				status.Code = 1;
-				status.Message = "Update Event Successfully";
+
+				return eventSelectd;
+				
 			}
 			catch (Exception)
 			{
-				status.Code = 0;
-				status.Message = "Invalid data in form or parse error";
+				
 			}
-			return status;
+			return null;
 		}
 
 

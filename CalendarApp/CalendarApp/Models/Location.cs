@@ -1,15 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CalendarApp.Models
 {
-    public class Location
+    public partial class Location
     {
-        [Key]
+        public Location()
+        {
+            Events = new HashSet<Event>();
+        }
+
         public int Id { get; set; }
-        public string Name { get; set; }    
+        public string Name { get; set; } = null!;
 
-
-        //Relation with Events
         public virtual ICollection<Event> Events { get; set; }
     }
 }

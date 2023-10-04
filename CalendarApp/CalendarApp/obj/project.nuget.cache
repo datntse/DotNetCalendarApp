@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "rctAH3jYd68PSX6qyC4OPZo2WteiSa7mVotK1/znW3EndXSAPZICOrUl12BWptkAsZHiTr7/fsl7/qxfinN5ug==",
+  "dgSpecHash": "1gVugMN2ughwyk3OQTr95Ovs2BxsHcwlwOFZwh8mII7oCJTiTMJeYlnr8H9VfCn9YnALyPvnHxI2cqpN7qKmyg==",
   "success": true,
   "projectFilePath": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\CalendarApp.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\datnt\\.nuget\\packages\\hangfire\\1.8.5\\hangfire.1.8.5.nupkg.sha512",
     "C:\\Users\\datnt\\.nuget\\packages\\hangfire.aspnetcore\\1.8.5\\hangfire.aspnetcore.1.8.5.nupkg.sha512",
     "C:\\Users\\datnt\\.nuget\\packages\\hangfire.core\\1.8.5\\hangfire.core.1.8.5.nupkg.sha512",
+    "C:\\Users\\datnt\\.nuget\\packages\\hangfire.entityframeworkcore\\0.5.0\\hangfire.entityframeworkcore.0.5.0.nupkg.sha512",
     "C:\\Users\\datnt\\.nuget\\packages\\hangfire.netcore\\1.8.5\\hangfire.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\datnt\\.nuget\\packages\\hangfire.sqlserver\\1.8.5\\hangfire.sqlserver.1.8.5.nupkg.sha512",
     "C:\\Users\\datnt\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

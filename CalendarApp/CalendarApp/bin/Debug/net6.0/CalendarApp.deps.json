@@ -9,6 +9,8 @@
       "CalendarApp/1.0.0": {
         "dependencies": {
           "Hangfire": "1.8.5",
+          "Hangfire.EntityFrameworkCore": "0.5.0",
+          "Hangfire.SqlServer": "1.8.5",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "6.0.16",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.16",
           "Microsoft.AspNetCore.Identity.UI": "6.0.16",
@@ -113,6 +115,18 @@
           },
           "lib/netstandard2.0/zh/Hangfire.Core.resources.dll": {
             "locale": "zh"
+          }
+        }
+      },
+      "Hangfire.EntityFrameworkCore/0.5.0": {
+        "dependencies": {
+          "Hangfire.Core": "1.8.5",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.21"
+        },
+        "runtime": {
+          "lib/net6.0/Hangfire.EntityFrameworkCore.dll": {
+            "assemblyVersion": "0.5.0.0",
+            "fileVersion": "0.5.0.0"
           }
         }
       },
@@ -2944,6 +2958,13 @@
       "sha512": "sha512-OA5D59dkgS04rU9UDQkSypT36pn5RbtFpFZwhbHA4LL3VDeE0aaf4rShvKRJihJze62fr5AhjktJf4cJMDpYyQ==",
       "path": "hangfire.core/1.8.5",
       "hashPath": "hangfire.core.1.8.5.nupkg.sha512"
+    },
+    "Hangfire.EntityFrameworkCore/0.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VmQYBarXNIuVHGOc29OkawUlWbd3TKKoqWdmn+cOUPu2btzcZRrOD4ORO5joDTTBxklN4lSfc2QhfA9R//FS2w==",
+      "path": "hangfire.entityframeworkcore/0.5.0",
+      "hashPath": "hangfire.entityframeworkcore.0.5.0.nupkg.sha512"
     },
     "Hangfire.NetCore/1.8.5": {
       "type": "package",

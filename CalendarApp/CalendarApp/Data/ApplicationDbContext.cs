@@ -1,6 +1,7 @@
 ﻿using CalendarApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace CalendarApp.Data
 {
@@ -13,8 +14,10 @@ namespace CalendarApp.Data
 
 		public DbSet<Event> Events { get; set; }
         public DbSet<Location> Locations { get; set; }
-	
 
+		public DbSet<Job> Jobs { get; set; }
+
+		
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 
@@ -28,6 +31,22 @@ namespace CalendarApp.Data
 					entityType.SetTableName(tableName.Substring(6));
 				}
 			}
+			builder.Entity<Job>(entity =>
+			{
+				entity.HasNoKey();
+				entity.ToTable("Job", "HangFire");
+				entity.HasIndex(e => e.ExpireAt, "IX_HangFire_Job_ExpireAt")
+					.HasFilter("([ExpireAt] IS NOT NULL)");
+
+				entity.HasIndex(e => e.StateName, "IX_HangFire_Job_StateName")
+					.HasFilter("([StateName] IS NOT NULL)");
+
+				entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+				entity.Property(e => e.ExpireAt).HasColumnType("datetime");
+
+				entity.Property(e => e.StateName).HasMaxLength(20);
+			});
 
 
 		}

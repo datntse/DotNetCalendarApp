@@ -45,6 +45,10 @@
               "target": "Package",
               "version": "[1.8.5, )"
             },
+            "Hangfire.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[0.5.0, )"
+            },
             "Hangfire.SqlServer": {
               "target": "Package",
               "version": "[1.8.5, )"
