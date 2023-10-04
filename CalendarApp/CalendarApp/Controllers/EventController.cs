@@ -119,9 +119,10 @@ namespace CalendarApp.Controllers
 				else
 				{
 					 _event = await _dal.CreateEvent(form);
+					await _jobService.ReminderTask(_event);
 				}
 				//create backgorund job
-				await _jobService.ReminderTask(_event);
+				// can check start time co khac nhau hay khong? Dat cai nay trong cai method thi oke hon
 
 			}
 			return new JsonResult(status);

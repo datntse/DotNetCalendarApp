@@ -32,42 +32,66 @@ namespace CalendarApp.Service.Implements
 			var remindTime = _event.StartTime.Subtract(TimeSpan.FromMinutes(30));
 
 			var listJobArguments = _context.Jobs.Where(x => x.Arguments != null && x.ExpireAt == null).ToList();
-			
-			// handle if list backgorund job is expired
-			if(listJobArguments.Count() == 0)
+
+			// init job for all backgorund job was expired.
+			if (listJobArguments.Count() == 0)
 			{
 				var jobId = _backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
 			}
 
+			// tim cai job do. 
+			// neu khong co job do thi tao. 
+			// layu cai jobid ra
+			// xong duyet trong cai mang
+			// khong co cai id do thi tao
+			// co roi thi update.
+
+			Job _currentJob = null;
+
 			foreach (var job in listJobArguments)
 			{
-				// lay job ra xong check job arguement. 
-				// handle create voi update.
-				if(!job.Arguments.Contains(_eventId.ToString()))
+				if (job.Arguments.Contains(_eventId.ToString()))
 				{
-					// create job.
-					var jobId = _backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+					_currentJob = job;
+					break;
+					
 				}
-				else if (job.Arguments.Contains(_eventId.ToString()))
-				{
-					//updated job.
-					// xoa job do roi tao lai job moi.
-					var currentJobId = job.Id.ToString();
-					BackgroundJob.Delete(currentJobId);
-					_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
-				}
-				
 			}
 
-
+			if (_currentJob != null)
+			{
+				var currentJobId = _currentJob.Id.ToString();
+				BackgroundJob.Delete(currentJobId);
+				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+			} else
+			{
+				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
+			}
 		}
 
+		public async Task RemoveRemindTask(Event _event)
+		{
+			var _eventId = _event.Id;
+			var remindTime = _event.StartTime.Subtract(TimeSpan.FromMinutes(30));
+
+			var listJobArguments = _context.Jobs.Where(x => x.Arguments != null && x.ExpireAt == null).ToList();
+			foreach (var job in listJobArguments)
+			{
+				if (job.Arguments.Contains(_eventId.ToString()))
+				{
+				// xóa backgorund job
+					var currentJobId = job.Id.ToString();
+					BackgroundJob.Delete(currentJobId);
+					break;
+				}
+			}
+		}
 		public void NotifyForUser(int eventId)
 		{
 			// singalR
 			Console.WriteLine("Create a schedule Job for notify have event");
 		}
 
-
+		
 	}
 }

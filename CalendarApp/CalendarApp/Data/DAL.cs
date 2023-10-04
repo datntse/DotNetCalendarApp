@@ -1,4 +1,5 @@
 ﻿using CalendarApp.Models;
+using CalendarApp.Service.Abtract;
 using Hangfire;
 using Microsoft.AspNetCore.Components;
 
@@ -26,10 +27,11 @@ namespace CalendarApp.Data
 	public class DAL : IDAL
 	{
 		private readonly ApplicationDbContext _context;
-		private readonly IBackgroundJobClient _backgroundJobClient;
+		private readonly IJobService _jobService;
 
-		public DAL(ApplicationDbContext context)
+		public DAL(ApplicationDbContext context, IJobService jobService)
 		{
+			_jobService = jobService;
 			_context = context;
 		}
 
@@ -134,6 +136,7 @@ namespace CalendarApp.Data
 			{
 				_context.Remove(myEvent);
 				await _context.SaveChangesAsync();
+				await _jobService.RemoveRemindTask(myEvent);
 				status.Code = 1;
 				status.Message = "Deleted Event";
 			}
@@ -172,13 +175,21 @@ namespace CalendarApp.Data
 		public async Task<Event> UpdateEvent(IFormCollection form)
 		{
 			var locationName = form["Location"].ToString();
+			var startTime = DateTime.ParseExact(form["StartTime"].ToString(), "dd/MM/yyyy hh:mm tt", null);
 			var eventId = int.Parse(form["Id"]);
 			try
 			{
 
 				var eventSelectd = _context.Events.FirstOrDefault(x => x.Id == eventId);
 				var location = _context.Locations.FirstOrDefault(x => x.Name.Equals(locationName));
+				
+				if(eventSelectd.StartTime != startTime) {
+					await _jobService.ReminderTask(eventSelectd);
+				}
+
 				eventSelectd.UpdateEvent(form, location);
+				
+
 
 				_context.Entry(eventSelectd).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 				await _context.SaveChangesAsync();

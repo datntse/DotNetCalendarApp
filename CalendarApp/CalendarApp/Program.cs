@@ -11,27 +11,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Dbcontext config
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseSqlServer(connectionString)
 	.UseLazyLoadingProxies());
 
 builder.Services.AddDbContext<CalenderAppContext>(options =>
 	options.UseSqlServer(connectionString));
-
+// identity
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+	.AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddControllersWithViews();
 
 
 //Hangfire Services
 builder.Services.AddHangfire(options => options.UseSqlServerStorage(connectionString));
 builder.Services.AddHangfireServer();
 
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-	.AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
 
 
 //DI

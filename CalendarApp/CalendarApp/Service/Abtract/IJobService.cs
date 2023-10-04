@@ -6,5 +6,6 @@ namespace CalendarApp.Service.Abtract
     public interface IJobService
     {
 		Task ReminderTask(Event _event);
+		Task RemoveRemindTask(Event _event);
 	}
 }
