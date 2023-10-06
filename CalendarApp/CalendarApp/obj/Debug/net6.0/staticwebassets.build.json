@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GXPtHQL2tbpZHAvhjwlnfDWJy4LQLBlM6wkvoI7RpkY=",
+  "Hash": "uliTMxZOuBpHREP4T7MujlNUx4IlOum7y8yCTJFSGwY=",
   "Source": "CalendarApp",
   "BasePath": "_content/CalendarApp",
   "Mode": "Default",
@@ -2123,6 +2123,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Identity": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\microsoft\\signalr\\dist\\browser\\signalr.js",
+      "SourceId": "CalendarApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Visual Studio\\MVC Trainning\\DotNetCalendarApp\\CalendarApp\\CalendarApp\\wwwroot\\",
+      "BasePath": "_content/CalendarApp",
+      "RelativePath": "microsoft/signalr/dist/browser/signalr.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\microsoft\\signalr\\dist\\browser\\signalr.js"
     }
   ]
 }

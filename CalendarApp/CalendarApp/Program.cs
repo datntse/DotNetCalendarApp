@@ -1,5 +1,6 @@
 using CalendarApp.Data;
 using CalendarApp.Helpers;
+using CalendarApp.Hub;
 using CalendarApp.Models;
 using CalendarApp.Service.Abtract;
 using CalendarApp.Service.Implements;
@@ -28,16 +29,28 @@ builder.Services.AddControllersWithViews();
 
 
 //Hangfire Services
-builder.Services.AddHangfire(options => options.UseSqlServerStorage(connectionString));
+builder.Services.AddHangfire(options =>
+{
+	options.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+.UseSimpleAssemblyNameTypeSerializer()
+.UseRecommendedSerializerSettings()
+.UseSqlServerStorage(connectionString);
+});
 builder.Services.AddHangfireServer();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
+// SignalR
+builder.Services.AddSignalR()
+  .AddJsonProtocol(options =>
+   {
+	   options.PayloadSerializerOptions.WriteIndented = false;
+   });
+
 //DI
 builder.Services.AddScoped<IDAL, DAL>();
 builder.Services.AddScoped<IJobService, JobService>();
-builder.Services.AddInfrastructure();
 
 
 var app = builder.Build();
@@ -58,6 +71,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseHangfireDashboard();
+app.UseHangfireServer();
 
 app.UseRouting();
 
@@ -68,5 +82,8 @@ app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+// create maphub
+app.MapHub<NotifyHub>("notify-hub");
 
 app.Run();

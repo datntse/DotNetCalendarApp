@@ -1,5 +1,6 @@
 ﻿using CalendarApp.Data;
 using CalendarApp.Helpers;
+using CalendarApp.Hub;
 using CalendarApp.Models;
 using CalendarApp.Models.ViewModels;
 using CalendarApp.Service.Abtract;
@@ -7,6 +8,8 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 
@@ -20,19 +23,26 @@ namespace CalendarApp.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IBackgroundJobClient _backgroundJobClient;
 
-		public HomeController(ILogger<HomeController> logger, IDAL idal, 
+		private readonly IHubContext<NotifyHub> _notifyHub;
+		public HomeController(ILogger<HomeController> logger, IDAL idal,
 			UserManager<ApplicationUser> userManager,
 			IBackgroundJobClient backgroundJobClient,
-			IJobService jobService)
+			IJobService jobService,
+			IHubContext<NotifyHub> notifyHub)
 		{
+			_notifyHub = notifyHub;
 			_idal = idal;
 			_jobService = jobService;
 			_logger = logger;
 			_userManager = userManager;
 			_backgroundJobClient = backgroundJobClient;
 		}
-
-
+		[HttpGet("testsignalR")]
+		public async Task<IActionResult> TestSginalR()
+		{
+			await _notifyHub.Clients.All.SendAsync("client_function_name", "Message from controller");
+			return View();
+		}
 		public IActionResult Index()
 		{
 			return View();
@@ -45,17 +55,18 @@ namespace CalendarApp.Controllers
 			{
 				var userId = await _userManager.GetUserIdAsync(_user);
 				ViewData["UserId"] = userId;
-				
+
 				var _eventList = JSONListHelper.GetEventListJSONString(_idal.GetMyEvents(userId));
 				var _locationList = JSONListHelper.GetResourceListJSONString(_idal.GetLocations());
 				ViewData["EventList"] = _eventList;
 				ViewData["ResourceList"] = _locationList;
 			}
-			
+			await _notifyHub.Clients.All.SendAsync("client_function_name", "Message from MyCalendar controller");
+
 			return View(new EventViewModel(_idal.GetLocations()));
 		}
 
-		
+
 		public IActionResult Privacy()
 		{
 			return View();

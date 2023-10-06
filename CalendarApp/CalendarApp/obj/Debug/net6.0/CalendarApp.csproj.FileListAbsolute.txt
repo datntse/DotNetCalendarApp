@@ -258,9 +258,6 @@ D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Deb
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Castle.Core.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Proxies.dll
-D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Quartz.dll
-D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Quartz.Extensions.DependencyInjection.dll
-D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Quartz.Extensions.Hosting.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Hangfire.AspNetCore.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Hangfire.Core.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Hangfire.NetCore.dll
@@ -283,3 +280,4 @@ D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Deb
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.Core.dll
 D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\Hangfire.EntityFrameworkCore.dll
+D:\Visual Studio\MVC Trainning\DotNetCalendarApp\CalendarApp\CalendarApp\bin\Debug\net6.0\libman.json

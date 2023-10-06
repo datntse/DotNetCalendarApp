@@ -127,26 +127,87 @@
 		</div>
 	</div>
 </div>
-<
+
+<button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
+
+<div class="position-fixed bottom-0 end-0 p-3" data-bs-autohide="false" style="z-index: 11">
+	<div id="liveToast" class="toast" role="alert" aria-live="assertive"  aria-atomic="true">
+		<div class="toast-header">
+			<img src="..." class="rounded me-2" alt="...">
+			<strong id="toast-header" class="me-auto"></strong>
+			<small id="toast-mins">11 mins ago</small>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body">
+			<div><span style="font-weight: bold">Start time: </span><span id="toast-startTime"></span></div>
+			<div><span style="font-weight: bold">End time: </span><span id="toast-endTime"></span></div>
+			<div><span style="font-weight: bold">Description: </span><span id="toast-desc"></span></div>
+			<div><span style="font-weight: bold">Location: </span><span id="toast-location"></span></div>
+		</div>
+	</div>
+</div>
+
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/6.7.13/css/tempus-dominus.css" integrity="sha512-Has32s6AdZCytVnqS3BZc7JZ0PF1WJTNuPQAjGGzwrUa6i7vU9YgAyXm32qtrTP4dihoMaz/2AqPNTW9II5DOA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <!-- CSS -->
 @section Scripts {
-
+	<script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<!-- Include Moment.js CDN -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js">
 	</script>
 
 
-
 	<script>
+
 		document.addEventListener('DOMContentLoaded', function () {
 
+			var toastTrigger = document.getElementById('liveToastBtn')
+			var toastLiveExample = document.getElementById('liveToast')
+
 			var currentDate = new Date();
-			//const datetimepicker1 = new tempusDominus.TempusDominus(document.getElementById('dtp1'));
-			//$('#dtp1,#dtp2').datetimepicker({
-			//	format: 'DD/MM/YYYY HH:mm A'
-			//});
+
+			//config signalR connection
+			let connection = new signalR.HubConnectionBuilder()
+				.withUrl("/notify-hub")
+				.build()
+
+
+			connection.start().then(() => {
+				console.log("connected")
+			});
+
+			// after trigger NotifyForUser by backgorund job
+			connection.on("TaskNotifycation", (_eventData, locationName) => {
+
+
+				console.log(_eventData);
+				const customObject = JSON.parse(_eventData);
+				console.log(customObject);
+				console.log("Name", customObject.name);
+				console.log("StartTime", customObject.startTime);
+				console.log("End time", customObject.startTime);
+				console.log("Dsectipn", customObject.description);
+				console.log("Loccation", locationName);
+
+				var toast = new bootstrap.Toast(toastLiveExample)
+
+				$('#toast-header').text(customObject.name);
+				$('#toast-mins').text(customObject.startTime);
+				$('#toast-startTime').text(customObject.startTime);
+				$('#toast-endTime').text(customObject.endTime);
+				$('#toast-desc').text(customObject.description);
+				$('#toast-location').text(locationName);
+				toast.autohide = false;
+				toast.show()
+
+			});
+
+
+			//const triggerFetch = () => fetch('/testsignalR');
+			connection.on("client_function_name", msg => console.log('client_function_name', msg));
+
 
 			var selectedEvent = null;
 			var eventLocation = null;
@@ -173,7 +234,7 @@
 						eventLocation = calEvent.event.extendedProps.locationName;
 						$('#myModal #eventTitle').text(calEvent.event.title);
 						var $description = $('<div/>');
-						
+
 						$description.append($('<p/>').html('<b>Start Time:</b>' + moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A')));
 
 						if (calEvent.event.end != null) {
@@ -208,7 +269,6 @@
 			$('#CloseEditModelBtn').click(function () {
 				$('#myModalSave').modal('hide');
 			})
-
 
 
 			$('#btnDelete').click(function () {
@@ -355,7 +415,7 @@
 							data: formdata,
 							processData: false,
 							contentType: false,
-							success: function (response	) {
+							success: function (response) {
 								FetchCalendar();
 								$('#myModalSave').modal('hide');
 								alert("Success");

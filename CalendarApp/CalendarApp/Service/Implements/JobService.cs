@@ -1,9 +1,16 @@
 ﻿using CalendarApp.Data;
+using CalendarApp.Hub;
 using CalendarApp.Models;
 using CalendarApp.Service.Abtract;
 using Hangfire;
 using Hangfire.Storage;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace CalendarApp.Service.Implements
@@ -12,9 +19,12 @@ namespace CalendarApp.Service.Implements
 	{
 		private readonly IBackgroundJobClient _backgroundJobClient;
 		private readonly ApplicationDbContext _context;
+		private readonly IHubContext<NotifyHub> _notifyHub;
 
-		public JobService(IBackgroundJobClient backgroundJobClient, ApplicationDbContext context)
+		public JobService(IBackgroundJobClient backgroundJobClient, ApplicationDbContext context,
+			IHubContext<NotifyHub> notifyHub)
 		{
+			_notifyHub = notifyHub;
 			_backgroundJobClient = backgroundJobClient;
 			_context = context;
 		}
@@ -54,7 +64,7 @@ namespace CalendarApp.Service.Implements
 				{
 					_currentJob = job;
 					break;
-					
+
 				}
 			}
 
@@ -63,10 +73,19 @@ namespace CalendarApp.Service.Implements
 				var currentJobId = _currentJob.Id.ToString();
 				BackgroundJob.Delete(currentJobId);
 				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
-			} else
-			{
-				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
 			}
+			else
+			{
+				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), TimeSpan.FromSeconds(2));
+				//_backgroundJobClient.Enqueue(() => Execute());
+
+			}
+		}
+
+		public void Execute()
+		{
+			// Invoke SignalR method
+			_notifyHub.Clients.All.SendAsync("client_function_name", "Hello from Hangfire!");
 		}
 
 		public async Task RemoveRemindTask(Event _event)
@@ -79,19 +98,41 @@ namespace CalendarApp.Service.Implements
 			{
 				if (job.Arguments.Contains(_eventId.ToString()))
 				{
-				// xóa backgorund job
+					// xóa backgorund job
 					var currentJobId = job.Id.ToString();
 					BackgroundJob.Delete(currentJobId);
 					break;
 				}
 			}
 		}
+
+		// signal R goi invod de nhan data thang ham nay tra ve => xong hien len view.
+
 		public void NotifyForUser(int eventId)
 		{
-			// singalR
-			Console.WriteLine("Create a schedule Job for notify have event");
+
+
+			// disable lazy loading.
+			_context.ChangeTracker.LazyLoadingEnabled = false;
+			var settings = new JsonSerializerSettings
+			{
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+				ContractResolver = new CamelCasePropertyNamesContractResolver()
+			};
+
+			var _eventData = _context.Events.Where(x => x.Id == eventId).FirstOrDefault();
+			var _location = _context.Locations.Where(x => x.Id == _eventData.LocationId).Select(x => x.Name).FirstOrDefault();	
+
+			if (_eventData != null)
+			{
+				var jsonObject = JsonConvert.SerializeObject(_eventData, settings);
+				_notifyHub.Clients.All.SendAsync("TaskNotifycation", jsonObject, _location);
+			}
+
+
+
 		}
 
-		
+
 	}
 }
