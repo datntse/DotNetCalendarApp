@@ -11,6 +11,8 @@ using CalendarApp.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Hangfire;
 using CalendarApp.Service.Abtract;
+using CalendarApp.Helpers;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CalendarApp.Controllers
 {
@@ -20,6 +22,7 @@ namespace CalendarApp.Controllers
 		private readonly IDAL _dal;
 		private readonly IBackgroundJobClient _backgroundJobClient;
 		private readonly IJobService _jobService;
+
 
 		public EventController(IDAL idal, UserManager<ApplicationUser> userManager,
 			IBackgroundJobClient backgroundJobClient, IJobService jobService)
@@ -100,7 +103,6 @@ namespace CalendarApp.Controllers
 		{
 			var eventId = int.Parse(form["id"].ToString());
 			var userId = (form["UserId"].ToString());
-			var status = new Status();
 
 			Event _event = null;
 
@@ -121,11 +123,15 @@ namespace CalendarApp.Controllers
 					 _event = await _dal.CreateEvent(form);
 					await _jobService.ReminderTask(_event);
 				}
+
+
 				//create backgorund job
 				// can check start time co khac nhau hay khong? Dat cai nay trong cai method thi oke hon
 
 			}
-			return new JsonResult(status);
+			var _eventList = JSONListHelper.GetEventListJSONString(_dal.GetMyEvents(userId));
+
+			return new JsonResult(_eventList);
 		}
 
 		[HttpPost]

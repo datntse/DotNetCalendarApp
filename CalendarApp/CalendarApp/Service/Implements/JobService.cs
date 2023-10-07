@@ -128,9 +128,6 @@ namespace CalendarApp.Service.Implements
 				var jsonObject = JsonConvert.SerializeObject(_eventData, settings);
 				_notifyHub.Clients.All.SendAsync("TaskNotifycation", jsonObject, _location);
 			}
-
-
-
 		}
 
 

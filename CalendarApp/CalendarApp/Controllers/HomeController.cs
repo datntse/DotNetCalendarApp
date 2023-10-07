@@ -37,12 +37,7 @@ namespace CalendarApp.Controllers
 			_userManager = userManager;
 			_backgroundJobClient = backgroundJobClient;
 		}
-		[HttpGet("testsignalR")]
-		public async Task<IActionResult> TestSginalR()
-		{
-			await _notifyHub.Clients.All.SendAsync("client_function_name", "Message from controller");
-			return View();
-		}
+
 		public IActionResult Index()
 		{
 			return View();
@@ -61,7 +56,6 @@ namespace CalendarApp.Controllers
 				ViewData["EventList"] = _eventList;
 				ViewData["ResourceList"] = _locationList;
 			}
-			await _notifyHub.Clients.All.SendAsync("client_function_name", "Message from MyCalendar controller");
 
 			return View(new EventViewModel(_idal.GetLocations()));
 		}
