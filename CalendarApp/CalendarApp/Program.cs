@@ -86,4 +86,6 @@ app.MapRazorPages();
 // create maphub
 app.MapHub<NotifyHub>("notify-hub");
 
+RecurringJob.AddOrUpdate<IJobService>(Guid.NewGuid().ToString(), x => x.CollectionGrabage_Events(), Cron.Weekly());
+
 app.Run();

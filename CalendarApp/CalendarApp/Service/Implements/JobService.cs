@@ -88,6 +88,26 @@ namespace CalendarApp.Service.Implements
 			_notifyHub.Clients.All.SendAsync("client_function_name", "Hello from Hangfire!");
 		}
 
+
+		public void CollectionGrabage_Events()
+		{
+			DateTime currentDate = DateTime.Now.Date;
+
+			// Subtract one day from the current date
+			DateTime yesterday = currentDate.AddDays(-1);
+
+			var _eventListOutOfDate = _context.Events.Where(x => x.EndTime < yesterday).ToList();
+			if (_eventListOutOfDate.Count() > 0)
+			{
+				foreach (var _event in _eventListOutOfDate)
+				{
+					_context.Remove(_event);
+				}
+				_context.SaveChanges();
+			}
+
+		}
+
 		public async Task RemoveRemindTask(Event _event)
 		{
 			var _eventId = _event.Id;
@@ -121,7 +141,7 @@ namespace CalendarApp.Service.Implements
 			};
 
 			var _eventData = _context.Events.Where(x => x.Id == eventId).FirstOrDefault();
-			var _location = _context.Locations.Where(x => x.Id == _eventData.LocationId).Select(x => x.Name).FirstOrDefault();	
+			var _location = _context.Locations.Where(x => x.Id == _eventData.LocationId).Select(x => x.Name).FirstOrDefault();
 
 			if (_eventData != null)
 			{

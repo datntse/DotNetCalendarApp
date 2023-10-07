@@ -7,5 +7,7 @@ namespace CalendarApp.Service.Abtract
     {
 		Task ReminderTask(Event _event);
 		Task RemoveRemindTask(Event _event);
+
+		void CollectionGrabage_Events();
 	}
 }

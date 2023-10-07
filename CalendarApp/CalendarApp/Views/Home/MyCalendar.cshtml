@@ -135,10 +135,11 @@
 		<div class="toast-header">
 			<img src="..." class="rounded me-2" alt="...">
 			<strong id="toast-header" class="me-auto"></strong>
-			<small id="toast-mins">11 mins ago</small>
+			<small id="toast-mins">1 mins ago</small>
 			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 		</div>
 		<div class="toast-body">
+			<div><span style="font-weight: bold">Event: </span><span id="toast-event"></span></div>
 			<div><span style="font-weight: bold">Start time: </span><span id="toast-startTime"></span></div>
 			<div><span style="font-weight: bold">End time: </span><span id="toast-endTime"></span></div>
 			<div><span style="font-weight: bold">Description: </span><span id="toast-desc"></span></div>
@@ -166,15 +167,14 @@
 			var toastTrigger = document.getElementById('liveToastBtn')
 			var toastLiveExample = document.getElementById('liveToast')
 
-			if (toastTrigger) {
-				toastTrigger.addEventListener('click', function () {
-					var toast = new bootstrap.Toast(toastLiveExample, {
-						autohide: false
-					});
+			toastTrigger.addEventListener('click', function () {
+				var toast = new bootstrap.Toast(toastLiveExample, {
+					autohide: false
+				});
+				console.log("Click vo r ne :(())");
+				toast.show()
+			})
 
-					toast.show()
-				})
-			}
 			var _eventList = null;
 
 			var currentDate = new Date();
@@ -195,6 +195,33 @@
 			var eventLocation = null;
 
 			_eventList = @Html.Raw(ViewData["EventList"]);
+
+
+			//after trigger Tasknotifycation in hubcontext.
+			connection.on("TaskNotifycation", (_eventData, locationName) => {
+				const customObject = JSON.parse(_eventData);
+
+
+				$('#toast-header').text('Task in calendar');
+				$('#toast-event').text(customObject.name);
+				//$('#toast-mins').text(moment(customObject.).format('DD-MM-YYYY HH:mm A'));
+				$('#toast-startTime').text(moment(customObject.startTime).format('DD-MM-YYYY HH:mm A'));
+				$('#toast-endTime').text(moment(customObject.endTime).format('DD-MM-YYYY HH:mm A'));
+				$('#toast-desc').text(customObject.description);
+				$('#toast-location').text(locationName);
+
+				console.log('Object after cast', customObject);
+				console.log('Location name', locationName);
+
+				var toast = new bootstrap.Toast(toastLiveExample, {
+					autohide: false
+				});
+
+				toast.show()
+			});
+
+
+			
 
 			FetchCalendar(_eventList);
 			function FetchCalendar(_eventList) {
@@ -386,6 +413,8 @@
 			})
 
 
+
+
 			function SaveEvent(formdata) {
 
 				$.ajax({
@@ -407,27 +436,13 @@
 							confirmButtonText: 'Yes, Thanks!'
 						}).then((result) => {
 							if (result.isConfirmed) {
+								var customObject = null;
+								var locationName = null;
+
 								FetchCalendar(_eventList);
-								// call signalHub;
-								connection.on("TaskNotifycation", (_eventData, locationName) => {
-									console.log(_eventData);
-									const customObject = JSON.parse(_eventData);
 
-									console.log(customObject);
 								
-
-									$('#toast-header').text(customObject.name);
-									$('#toast-mins').text(moment(calEvent.event.start).format('DD-MM-YYYY HH:mm A'));
-									$('#toast-startTime').text(customObject.startTime);
-									$('#toast-endTime').text(customObject.endTime);
-									$('#toast-desc').text(customObject.description);
-									$('#toast-location').text(locationName);
-
-
-									toastTrigger.trigger("click");
-									console.log("Plaese hien cai form ra di ma`");
-
-								});
+								// call signalHub;
 							}
 						})
 

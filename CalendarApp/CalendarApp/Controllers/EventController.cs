@@ -138,6 +138,7 @@ namespace CalendarApp.Controllers
 		public async Task<JsonResult> DeleteEvent(int eventId)
 		{
 			var result = await _dal.DeleteEvent(eventId);
+			var _eventList = _dal.GetEvents();
 			var status = new Status
 			{
 				Code = result.Code
