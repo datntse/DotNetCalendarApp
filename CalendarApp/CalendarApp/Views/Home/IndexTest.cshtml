@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Test new Route</h1>
+@using (Html.BeginForm("Code", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "error" })
+    <div class="form-group">
+        <div class="input-invoice-code">
+            <input type="text" class="form-control" placeholder="Nhập Mã tra cứu hóa đơn" name="InvoiceCode">
+            <i class="far fa-user icon-cover" aria-hidden="true"></i>
+        </div>
+        <div class="input-group-btn">
+            <button type="submit" class="btn bg-gradient-main rounded-pill btn-lg d-block mx-auto">Tra cứu</button>
+        </div>
+    </div>
+}
+
+
+<form action="@Url.Action("TraCuuPage", "Home")" method="get">
+    <input type="hidden" name="id" value="your-parameter-value" />
+    <button type="submit">Submit</button>
+</form>

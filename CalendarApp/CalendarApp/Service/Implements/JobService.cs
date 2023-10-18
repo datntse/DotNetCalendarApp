@@ -76,8 +76,8 @@ namespace CalendarApp.Service.Implements
 			}
 			else
 			{
+				//_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), remindTime);
 				_backgroundJobClient.Schedule(() => NotifyForUser(_eventId), TimeSpan.FromSeconds(2));
-				//_backgroundJobClient.Enqueue(() => Execute());
 
 			}
 		}

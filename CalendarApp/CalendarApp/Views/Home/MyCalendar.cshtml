@@ -55,7 +55,11 @@
 </div>
 
 
-
+<div class="divInvoiceCode">
+	<input style="width: 400px; height: 30px; position: relative;" name="txtInvoiceCode" maxlength="20" placeholder="Nhập Mã tra cứu mã hóa đơn"/>
+	<img style="width: 20px; height: 20px; position: absolute; top: 5px; right: 5px;" src="C:\Users\datnt\Downloads\SearchXML.png" />
+	<button>Tra cứu</button>
+</div>
 
 
 <div id="myModalSave" class="modal fade savemodal" role="dialog">
@@ -273,7 +277,31 @@
 						};
 						openAddEditForm();
 					},
+					editable: true,
+					eventDrop: function(info) {
+						var _event = info.event;
+						const formDragEvent = new FormData();
+						var _userId = $('input[name="UserId"]').val();
+						var _eventDrap = {
+							Id: _event.id,
+							Name: _event.title,
+							UserId: _userId,
+							//Description: _event.extendedProps.description,
+							//Location: _event.extendedProps.locationName,
+							StartTime: moment(_event.start).format('DD-MM-YYYY HH:mm A').ToDate(),
+							EndTime: moment(_event.end).format('DD-MM-YYYY HH:mm A').ToDate(),
+						};
 
+						for (let key in _eventDrap) {
+							if (_eventDrap.hasOwnProperty(key)) {
+								formDragEvent.append(key, _eventDrap[key]);
+							}
+						}
+
+						SaveEvent(formDragEvent);
+						console.log('Form data drag', formDragEvent);
+						FetchCalendar(_eventList);
+					}
 				});
 				calendar.render();
 			}

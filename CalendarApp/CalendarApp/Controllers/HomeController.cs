@@ -38,11 +38,39 @@ namespace CalendarApp.Controllers
 			_backgroundJobClient = backgroundJobClient;
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(long? id)
 		{
+			
 			return View();
 		}
-		[Authorize]
+
+		public IActionResult TraCuuPage(string? id)
+		{
+            if (id != null)
+            {
+                ViewData["Id"] = id;
+            }
+            return View();
+		}
+
+		//get Invoice
+
+        public IActionResult IndexTest(int? id)
+		{
+        
+            return View();
+		}
+
+		
+		[HttpPost]
+        public IActionResult Code(string InvoiceCode)
+        {
+			var LongData = long.Parse(InvoiceCode);	
+            return RedirectToAction("Index", new {id = LongData });
+        }
+
+
+        [Authorize]
 		public async Task<IActionResult> MyCalendar()
 		{
 			var _user = await _userManager.GetUserAsync(User);
